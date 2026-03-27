@@ -1,23 +1,23 @@
 export const config = {
-  runtime: 'edge'
+  runtime: 'edge',
 }
 
 export default async function handler(req) {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, x-api-key, anthropic-version',
+  }
+
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, x-api-key',
-      }
-    })
+    return new Response(null, { headers: corsHeaders })
   }
 
   const apiKey = req.headers.get('x-api-key')
   if (!apiKey) {
     return new Response(JSON.stringify({ error: 'No API key' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
   }
 
@@ -28,9 +28,9 @@ export default async function handler(req) {
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01'
+      'anthropic-version': '2023-06-01',
     },
-    body: body
+    body,
   })
 
   const data = await response.text()
@@ -38,10 +38,8 @@ export default async function handler(req) {
   return new Response(data, {
     status: response.status,
     headers: {
+      ...corsHeaders,
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, x-api-key',
-    }
+    },
   })
 }
