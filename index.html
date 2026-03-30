@@ -4,904 +4,216 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BL Air — Estimating Suite</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:        #0f0f0d;
-    --surface:   #1a1a18;
-    --surface2:  #242420;
-    --surface3:  #2e2e2a;
-    --border:    #3a3a34;
-    --orange:    #c4531a;
-    --orange-lt: #e0662a;
-    --orange-dk: #8f3c12;
-    --text:      #e8e4dc;
-    --text-mid:  #a09890;
-    --text-dim:  #6a6460;
-    --green:     #2d7a50;
-    --green-lt:  #3a9a64;
-    --mono:      'JetBrains Mono', monospace;
-    --sans:      'Barlow', sans-serif;
-    --cond:      'Barlow Condensed', sans-serif;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── HEADER ─────────────────────────────────── */
-  header {
-    background: var(--surface);
-    border-bottom: 2px solid var(--orange);
-    padding: 0 32px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .logo-mark {
-    width: 36px;
-    height: 36px;
-    background: var(--orange);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--cond);
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: 1px;
-    color: white;
-  }
-
-  .logo-text {
-    font-family: var(--cond);
-    font-weight: 700;
-    font-size: 18px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text);
-    line-height: 1;
-  }
-
-  .logo-sub {
-    font-family: var(--cond);
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .api-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--border);
-    transition: background 0.3s;
-  }
-
-  .status-dot.active { background: var(--green-lt); }
-
-  .btn-icon {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text-mid);
-    padding: 6px 14px;
-    font-family: var(--cond);
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .btn-icon:hover {
-    border-color: var(--orange);
-    color: var(--orange);
-  }
-
-  /* ── MAIN LAYOUT ─────────────────────────────── */
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px;
-  }
-
-  /* ── API KEY MODAL ───────────────────────────── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.hidden { display: none; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--orange);
-    width: 480px;
-    padding: 32px;
-  }
-
-  .modal-title {
-    font-family: var(--cond);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-
-  .modal-sub {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-bottom: 24px;
-    line-height: 1.6;
-  }
-
-  .field-label {
-    font-family: var(--cond);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-mid);
-    margin-bottom: 8px;
-  }
-
-  .field-input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 12px;
-    padding: 10px 14px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  .field-input:focus { border-color: var(--orange); }
-
-  .btn-primary {
-    background: var(--orange);
-    border: none;
-    color: white;
-    font-family: var(--cond);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 12px 28px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    transition: background 0.15s;
-  }
-
-  .btn-primary:hover { background: var(--orange-lt); }
-  .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
-
-  /* ── HOME — TWO TOOL CARDS ───────────────────── */
-  #view-home {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 8px;
-  }
-
-  .tool-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--border);
-    padding: 32px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .tool-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--orange);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s;
-  }
-
-  .tool-card:hover::before { transform: scaleX(1); }
-  .tool-card:hover { border-color: var(--orange-dk); }
-
-  .card-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-  }
-
-  .card-title {
-    font-family: var(--cond);
-    font-size: 28px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text);
-    line-height: 1.1;
-    margin-bottom: 12px;
-  }
-
-  .card-desc {
-    font-size: 13px;
-    color: var(--text-mid);
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-
-  .card-features {
-    list-style: none;
-    margin-bottom: 28px;
-  }
-
-  .card-features li {
-    font-size: 12px;
-    color: var(--text-dim);
-    padding: 4px 0;
-    padding-left: 16px;
-    position: relative;
-    font-family: var(--mono);
-  }
-
-  .card-features li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--orange);
-  }
-
-  .card-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--cond);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--orange);
-    border: 1px solid var(--orange-dk);
-    padding: 10px 20px;
-    transition: all 0.15s;
-  }
-
-  .tool-card:hover .card-cta {
-    background: var(--orange);
-    color: white;
-  }
-
-  /* ── VIEW STRUCTURE ──────────────────────────── */
-  .view { display: none; }
-  .view.active { display: block; }
-
-  .view-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .back-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text-mid);
-    font-family: var(--cond);
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .back-btn:hover { border-color: var(--orange); color: var(--orange); }
-
-  .view-title {
-    font-family: var(--cond);
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-
-  /* ── UPLOAD ZONE ─────────────────────────────── */
-  .upload-zone {
-    border: 2px dashed var(--border);
-    padding: 48px 32px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    background: var(--surface);
-    margin-bottom: 24px;
-  }
-
-  .upload-zone:hover, .upload-zone.drag-over {
-    border-color: var(--orange);
-    background: rgba(196,83,26,0.04);
-  }
-
-  .upload-zone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .upload-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-    opacity: 0.4;
-  }
-
-  .upload-text {
-    font-family: var(--cond);
-    font-size: 16px;
-    letter-spacing: 1px;
-    color: var(--text-mid);
-    margin-bottom: 6px;
-  }
-
-  .upload-sub {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-family: var(--mono);
-  }
-
-  .file-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-
-  .file-chip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 5px 12px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-mid);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .file-chip-remove {
-    cursor: pointer;
-    color: var(--text-dim);
-    font-size: 13px;
-    line-height: 1;
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    transition: color 0.15s;
-  }
-
-  .file-chip-remove:hover { color: var(--orange); }
-
-  /* ── PROJECT INFO FORM ───────────────────────── */
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-
-  /* ── PROGRESS / STATUS ───────────────────────── */
-  .status-bar {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--orange);
-    padding: 14px 18px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-mid);
-    margin-bottom: 20px;
-    display: none;
-  }
-
-  .status-bar.visible { display: flex; align-items: center; gap: 12px; }
-
-  .spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--border);
-    border-top-color: var(--orange);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ── SCOPE REPORT OUTPUT ─────────────────────── */
-  .report-container {
-    display: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--orange);
-  }
-
-  .report-container.visible { display: block; }
-
-  .report-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-
-  .report-toolbar-title {
-    font-family: var(--cond);
-    font-size: 13px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-mid);
-  }
-
-  .toolbar-actions {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn-sm {
-    background: var(--surface3);
-    border: 1px solid var(--border);
-    color: var(--text-mid);
-    font-family: var(--cond);
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .btn-sm:hover { border-color: var(--orange); color: var(--orange); }
-  .btn-sm.primary { background: var(--orange); border-color: var(--orange); color: white; }
-  .btn-sm.primary:hover { background: var(--orange-lt); }
-
-  .report-content {
-    padding: 28px 32px;
-    min-height: 400px;
-  }
-
-  /* Report sections */
-  .report-section {
-    margin-bottom: 28px;
-    border: 1px solid var(--border);
-  }
-
-  .report-section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .report-section-title {
-    font-family: var(--cond);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--orange);
-  }
-
-  .section-actions {
-    display: flex;
-    gap: 6px;
-  }
-
-  .btn-tiny {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 3px 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .btn-tiny:hover { border-color: var(--orange); color: var(--orange); }
-  .btn-tiny.danger:hover { border-color: #c44; color: #c44; }
-
-  .report-section-body {
-    padding: 16px;
-  }
-
-  .section-items { list-style: none; }
-
-  .section-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.5;
-  }
-
-  .section-item:last-child { border-bottom: none; }
-
-  .item-bullet {
-    color: var(--orange);
-    font-family: var(--mono);
-    font-size: 11px;
-    margin-top: 2px;
-    flex-shrink: 0;
-  }
-
-  .item-text {
-    flex: 1;
-    outline: none;
-    background: none;
-    color: inherit;
-    font-size: inherit;
-    font-family: inherit;
-    border: none;
-    border-bottom: 1px dashed transparent;
-    padding: 1px 4px;
-    transition: border-color 0.15s;
-    width: 100%;
-  }
-
-  .item-text:focus { border-bottom-color: var(--orange); background: rgba(196,83,26,0.05); }
-
-  .item-remove {
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-size: 14px;
-    padding: 0 4px;
-    opacity: 0;
-    transition: opacity 0.15s, color 0.15s;
-    flex-shrink: 0;
-  }
-
-  .section-item:hover .item-remove { opacity: 1; }
-  .item-remove:hover { color: #c44; }
-
-  .add-item-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .add-item-input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 12px;
-    padding: 7px 12px;
-    outline: none;
-  }
-
-  .add-item-input:focus { border-color: var(--orange); }
-
-  .add-section-row {
-    margin-top: 16px;
-    display: flex;
-    gap: 8px;
-  }
-
-  /* ── QUANTITY TABLE ──────────────────────────── */
-  .qty-table-wrap {
-    display: none;
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--green);
-    background: var(--surface);
-    margin-top: 8px;
-  }
-
-  .qty-table-wrap.visible { display: block; }
-
-  .qty-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-
-  .qty-toolbar-title {
-    font-family: var(--cond);
-    font-size: 13px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--green-lt);
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th {
-    font-family: var(--cond);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    padding: 10px 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-
-  td {
-    padding: 9px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-size: 13px;
-    color: var(--text);
-  }
-
-  tr:last-child td { border-bottom: none; }
-
-  td.qty-num {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--orange);
-    text-align: right;
-  }
-
-  td.qty-input {
-    padding: 4px 8px;
-  }
-
-  td.qty-input input {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--orange);
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 4px 8px;
-    width: 80px;
-    text-align: right;
-    outline: none;
-  }
-
-  td.qty-input input:focus { border-color: var(--orange); }
-
-  .section-divider {
-    background: var(--surface2);
-    font-family: var(--cond);
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--green-lt);
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* ── EMAIL PRICING TABS ──────────────────────── */
-  .email-tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 0;
-    overflow-x: auto;
-  }
-
-  .email-tab {
-    font-family: var(--cond);
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 10px 18px;
-    border: none;
-    border-bottom: 2px solid transparent;
-    background: none;
-    color: var(--text-dim);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s;
-  }
-
-  .email-tab:hover { color: var(--text-mid); }
-  .email-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
-
-  .email-panel { display: none; padding: 20px; }
-  .email-panel.active { display: block; }
-
-  .email-body {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 13px;
-    line-height: 1.7;
-    padding: 20px;
-    width: 100%;
-    min-height: 220px;
-    outline: none;
-    resize: vertical;
-    white-space: pre-wrap;
-  }
-
-  .email-body:focus { border-color: var(--orange); }
-
-  /* ── UTILITY ─────────────────────────────────── */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 24px 0;
-  }
-
-  .label-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
-
-  .hint {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-family: var(--mono);
-  }
-
-  .error-msg {
-    background: rgba(180,40,40,0.15);
-    border: 1px solid rgba(180,40,40,0.4);
-    color: #e88;
-    padding: 12px 16px;
-    font-size: 12px;
-    font-family: var(--mono);
-    margin-bottom: 16px;
-    display: none;
-  }
-
-  .error-msg.visible { display: block; }
-
-  /* Streaming text effect */
-  .streaming { opacity: 0.8; }
-  .cursor-blink::after {
-    content: '▋';
-    animation: blink 1s step-end infinite;
-    color: var(--orange);
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  /* Project info bar */
-  .project-bar {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 12px 18px;
-    display: flex;
-    gap: 32px;
-    margin-bottom: 20px;
-  }
-
-  .project-field {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .project-field-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-
-  .project-field-val {
-    font-family: var(--cond);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .notes-area {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 13px;
-    padding: 12px;
-    outline: none;
-    resize: vertical;
-    min-height: 80px;
-    line-height: 1.6;
-  }
-
-  .notes-area:focus { border-color: var(--orange); }
-
-  .tab-bar {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
-  }
-
-  .tab-btn {
-    font-family: var(--cond);
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 12px 24px;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .tab-btn:hover { color: var(--text-mid); }
-  .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+:root {
+  --bg: #0f0f0d;
+  --surface: #1a1a18;
+  --surface2: #242420;
+  --surface3: #2e2e2a;
+  --border: #3a3a34;
+  --orange: #c4531a;
+  --orange-lt: #e0662a;
+  --text: #e8e4dc;
+  --text-mid: #a09890;
+  --text-dim: #6a6460;
+  --green: #3a9a64;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Barlow', sans-serif;
+  --cond: 'Barlow Condensed', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
+
+/* HEADER */
+header {
+  background: var(--surface);
+  border-bottom: 2px solid var(--orange);
+  padding: 0 32px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo { display: flex; align-items: center; gap: 14px; }
+.logo-mark {
+  width: 36px; height: 36px;
+  background: var(--orange);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--cond); font-weight: 700; font-size: 14px; color: white;
+}
+.logo-text { font-family: var(--cond); font-weight: 700; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
+.logo-sub { font-family: var(--cond); font-size: 11px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-top: 2px; }
+.hdr-right { display: flex; align-items: center; gap: 16px; }
+.api-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+.api-dot.on { background: var(--green); }
+.api-label { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+.btn-outline {
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text-mid);
+  padding: 6px 14px; font-family: var(--cond); font-size: 12px; letter-spacing: 1px;
+  text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+}
+.btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+/* MODALS */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; }
+.overlay.hidden { display: none; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--orange); width: 480px; padding: 32px; }
+.modal-title { font-family: var(--cond); font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.modal-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; line-height: 1.6; }
+.field-lbl { font-family: var(--cond); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mid); margin-bottom: 8px; display: block; }
+.field-inp {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--mono); font-size: 12px; padding: 10px 14px; outline: none;
+}
+.field-inp:focus { border-color: var(--orange); }
+.btn-primary {
+  background: var(--orange); border: none; color: white;
+  font-family: var(--cond); font-size: 14px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; padding: 12px 28px; cursor: pointer; margin-top: 20px; width: 100%;
+}
+.btn-primary:hover { background: var(--orange-lt); }
+.btn-primary:disabled { background: var(--border); cursor: not-allowed; }
+
+/* MAIN */
+main { max-width: 1100px; margin: 0 auto; padding: 32px; }
+
+/* HOME */
+.home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.tool-card {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 32px; cursor: pointer; transition: border-color 0.2s;
+}
+.tool-card:hover { border-color: var(--orange); }
+.card-num { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 16px; }
+.card-title { font-family: var(--cond); font-size: 28px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; line-height: 1.1; margin-bottom: 12px; }
+.card-desc { font-size: 13px; color: var(--text-mid); line-height: 1.7; margin-bottom: 20px; }
+.card-features { list-style: none; margin-bottom: 24px; }
+.card-features li { font-size: 12px; color: var(--text-dim); padding: 3px 0 3px 16px; position: relative; font-family: var(--mono); }
+.card-features li::before { content: '→'; position: absolute; left: 0; color: var(--orange); }
+.card-cta { font-family: var(--cond); font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); border: 1px solid var(--orange); padding: 8px 18px; display: inline-block; }
+
+/* VIEWS */
+.view { display: none; }
+.view.active { display: block; }
+.view-hdr { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.view-title { font-family: var(--cond); font-size: 24px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+.back-btn { background: none; border: 1px solid var(--border); color: var(--text-mid); font-family: var(--cond); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; cursor: pointer; }
+.back-btn:hover { border-color: var(--orange); color: var(--orange); }
+
+/* FORMS */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+textarea.field-inp { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+/* UPLOAD */
+.upload-zone {
+  border: 2px dashed var(--border); padding: 48px 32px; text-align: center;
+  cursor: pointer; transition: all 0.2s; position: relative; background: var(--surface); margin-bottom: 16px;
+}
+.upload-zone:hover, .upload-zone.drag-over { border-color: var(--orange); }
+.upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.upload-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.4; }
+.upload-text { font-family: var(--cond); font-size: 16px; letter-spacing: 1px; color: var(--text-mid); margin-bottom: 4px; }
+.upload-sub { font-size: 11px; color: var(--text-dim); font-family: var(--mono); }
+.file-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.file-chip { background: var(--surface2); border: 1px solid var(--border); padding: 4px 10px; font-family: var(--mono); font-size: 11px; color: var(--text-mid); display: flex; align-items: center; gap: 6px; }
+.chip-x { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px; line-height: 1; }
+.chip-x:hover { color: #c44; }
+
+/* STATUS */
+.status-bar {
+  background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--orange);
+  padding: 12px 16px; font-family: var(--mono); font-size: 12px; color: var(--text-mid);
+  display: none; align-items: center; gap: 12px; margin: 16px 0;
+}
+.status-bar.show { display: flex; }
+.spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-bar { background: rgba(180,40,40,0.15); border: 1px solid rgba(180,40,40,0.4); color: #e88; padding: 10px 14px; font-size: 12px; font-family: var(--mono); display: none; margin: 8px 0; }
+.error-bar.show { display: block; }
+
+/* CHECKLIST */
+.checklist-wrap { margin: 16px 0; }
+.checklist-label { font-family: var(--cond); font-size: 11px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 10px; }
+.checklist-items { display: flex; flex-wrap: wrap; gap: 8px; }
+.check-chip {
+  background: var(--surface2); border: 1px solid var(--border); padding: 5px 12px;
+  font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+  display: flex; align-items: center; gap: 8px; transition: all 0.2s;
+}
+.check-chip.processing { border-color: var(--orange); color: var(--text); }
+.check-chip.done { border-color: var(--green); color: var(--green); }
+.check-chip.warn { border-color: #c44; color: #c44; }
+
+/* REPORT */
+.panel { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--orange); display: none; margin-top: 8px; }
+.panel.show { display: block; }
+.panel-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+.panel-title { font-family: var(--cond); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mid); }
+.toolbar-btns { display: flex; gap: 8px; }
+.btn-sm { background: var(--surface3); border: 1px solid var(--border); color: var(--text-mid); font-family: var(--cond); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; cursor: pointer; }
+.btn-sm:hover { border-color: var(--orange); color: var(--orange); }
+.btn-sm.hi { background: var(--orange); border-color: var(--orange); color: white; }
+.panel-body { padding: 24px 28px; }
+
+/* SECTIONS */
+.report-section { border: 1px solid var(--border); margin-bottom: 20px; }
+.section-hdr { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); }
+.section-title { font-family: var(--cond); font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); }
+.section-body { padding: 12px 14px; }
+.section-items { list-style: none; }
+.section-item { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+.section-item:last-child { border-bottom: none; }
+.item-bullet { color: var(--orange); font-family: var(--mono); font-size: 11px; margin-top: 2px; flex-shrink: 0; }
+.item-text { flex: 1; outline: none; background: none; color: var(--text); font-size: 13px; font-family: var(--sans); border: none; border-bottom: 1px dashed transparent; padding: 1px 4px; width: 100%; }
+.item-text:focus { border-bottom-color: var(--orange); }
+.item-del { background: none; border: none; color: var(--text-dim); cursor: pointer; opacity: 0; font-size: 14px; padding: 0 4px; }
+.section-item:hover .item-del { opacity: 1; }
+.item-del:hover { color: #c44; }
+.add-row { display: flex; gap: 8px; margin-top: 8px; }
+.add-inp { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--sans); font-size: 12px; padding: 6px 10px; outline: none; }
+.add-inp:focus { border-color: var(--orange); }
+.add-section-row { display: flex; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+/* TABS */
+.tabs { display: flex; border-bottom: 1px solid var(--border); }
+.tab { font-family: var(--cond); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 12px 24px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-dim); cursor: pointer; }
+.tab:hover { color: var(--text-mid); }
+.tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* EMAIL */
+.email-tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--border); }
+.email-tab { font-family: var(--cond); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 8px 16px; border: none; border-bottom: 2px solid transparent; background: none; color: var(--text-dim); cursor: pointer; white-space: nowrap; }
+.email-tab:hover { color: var(--text-mid); }
+.email-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+.email-panel { display: none; padding: 16px; }
+.email-panel.active { display: block; }
+.email-body { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--sans); font-size: 13px; line-height: 1.7; padding: 16px; outline: none; resize: vertical; min-height: 200px; white-space: pre-wrap; }
+.email-body:focus { border-color: var(--orange); }
+
+/* QTY TABLE */
+.qty-panel { background: var(--surface); border: 1px solid var(--green); border-top: 3px solid var(--green); display: none; margin-top: 8px; }
+.qty-panel.show { display: block; }
+.qty-panel-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+.qty-panel-title { font-family: var(--cond); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); }
+table { width: 100%; border-collapse: collapse; }
+th { font-family: var(--cond); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); padding: 8px 14px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
+td { padding: 7px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+tr:last-child td { border-bottom: none; }
+.cat-row td { background: var(--surface2); font-family: var(--cond); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); padding: 6px 14px; border-bottom: 1px solid var(--border); }
+td.qty-cell input { background: var(--bg); border: 1px solid var(--border); color: var(--orange); font-family: var(--mono); font-size: 13px; padding: 3px 8px; width: 80px; text-align: right; outline: none; }
+td.qty-cell input:focus { border-color: var(--orange); }
 </style>
 </head>
 <body>
 
-<!-- ── HEADER ──────────────────────────────────── -->
+<!-- HEADER -->
 <header>
   <div class="logo">
     <div class="logo-mark">BLA</div>
@@ -910,305 +222,240 @@
       <div class="logo-sub">Estimating Suite</div>
     </div>
   </div>
-  <div class="header-right">
-    <div class="api-status">
-      <div class="status-dot" id="statusDot"></div>
-      <span id="statusText">NO API KEY</span>
-    </div>
-    <button class="btn-icon" onclick="showApiModal()">API KEY</button>
+  <div class="hdr-right">
+    <div class="api-dot" id="apiDot"></div>
+    <span class="api-label" id="apiLabel">NO API KEY</span>
+    <button class="btn-outline" onclick="openApiModal()">API KEY</button>
   </div>
 </header>
 
-<!-- ── API KEY MODAL ───────────────────────────── -->
-<div class="modal-overlay" id="apiModal">
+<!-- API KEY MODAL -->
+<div class="overlay hidden" id="apiModal">
   <div class="modal">
     <div class="modal-title">API Key Setup</div>
-    <div class="modal-sub">Your key is stored locally in this browser only. It is never sent anywhere except directly to Anthropic's API.</div>
-    <div class="field-label">Anthropic API Key</div>
-    <input type="password" class="field-input" id="apiKeyInput" placeholder="sk-ant-api03-..." />
-    <button class="btn-primary" onclick="saveApiKey()">Save & Continue</button>
+    <div class="modal-sub">Your key is stored in this browser only. It is never sent anywhere except directly to Anthropic.</div>
+    <label class="field-lbl">Anthropic API Key</label>
+    <input type="password" class="field-inp" id="apiKeyInput" placeholder="sk-ant-api03-...">
+    <button class="btn-primary" onclick="saveKey()">Save & Continue</button>
   </div>
 </div>
 
-<!-- ── LOCAL FILE WARNING ──────────────────────── -->
-<div id="local-warning" style="display:none;background:#5c2e00;border-bottom:2px solid var(--orange);padding:10px 32px;font-family:var(--mono);font-size:12px;color:#fcebd8">
-  ⚠ You are opening this file directly. API calls may be blocked by Chrome. Run via: <strong>python -m http.server 8080</strong> then visit <strong>http://localhost:8080/BL_Air_Estimating_App.html</strong>
-</div>
-
-<!-- ── MAIN ────────────────────────────────────── -->
+<!-- MAIN -->
 <main>
 
   <!-- HOME -->
-  <div id="view-home" class="view active">
-    <div class="tool-card" onclick="goTo('scope')">
-      <div class="card-num">TOOL 01 / 02</div>
-      <div class="card-title">Scope<br>Confirmation</div>
-      <div class="card-desc">Upload drawings and Claude will read them, identify all mechanical scope, and generate a full scope confirmation report ready to send.</div>
-      <ul class="card-features">
-        <li>Reads PDF and image drawings</li>
-        <li>Generates scope by trade section</li>
-        <li>Fully editable before sending</li>
-        <li>Produces pricing emails for subs & suppliers</li>
-      </ul>
-      <div class="card-cta">Open Tool →</div>
-    </div>
-
-    <div class="tool-card" onclick="goTo('takeoff')">
-      <div class="card-num">TOOL 02 / 02</div>
-      <div class="card-title">Quantity<br>Takeoff</div>
-      <div class="card-desc">Upload drawings and Claude will extract all quantities — equipment, ductwork, grilles, spiral duct, electrical — and populate your estimate template.</div>
-      <ul class="card-features">
-        <li>Counts equipment from schedules</li>
-        <li>Measures duct runs and insulation types</li>
-        <li>Counts grilles, flex lengths, spiral metres</li>
-        <li>Downloads pre-filled estimate spreadsheet</li>
-      </ul>
-      <div class="card-cta">Open Tool →</div>
+  <div id="viewHome" class="view active">
+    <div class="home-grid">
+      <div class="tool-card" onclick="goTo('scope')">
+        <div class="card-num">TOOL 01 / 02</div>
+        <div class="card-title">Scope<br>Confirmation</div>
+        <div class="card-desc">Upload drawings and Claude will read them, identify all mechanical scope, and generate a full report ready to send.</div>
+        <ul class="card-features">
+          <li>Reads PDF and image drawings</li>
+          <li>Generates scope by trade section</li>
+          <li>Fully editable before sending</li>
+          <li>Produces pricing emails for subs & suppliers</li>
+        </ul>
+        <div class="card-cta">Open Tool →</div>
+      </div>
+      <div class="tool-card" onclick="goTo('takeoff')">
+        <div class="card-num">TOOL 02 / 02</div>
+        <div class="card-title">Quantity<br>Takeoff</div>
+        <div class="card-desc">Upload drawings and Claude will extract all quantities — equipment, ductwork, grilles, spiral duct, electrical.</div>
+        <ul class="card-features">
+          <li>Counts equipment from schedules</li>
+          <li>Measures duct runs and insulation types</li>
+          <li>Counts grilles, flex lengths, spiral metres</li>
+          <li>Review and edit before downloading</li>
+        </ul>
+        <div class="card-cta">Open Tool →</div>
+      </div>
     </div>
   </div>
 
-  <!-- ── SCOPE CONFIRMATION VIEW ───────────────── -->
-  <div id="view-scope" class="view">
-    <div class="view-header">
+  <!-- SCOPE CONFIRMATION -->
+  <div id="viewScope" class="view">
+    <div class="view-hdr">
       <button class="back-btn" onclick="goTo('home')">← Back</button>
       <div class="view-title">Scope Confirmation</div>
     </div>
-
-    <!-- Project Info -->
     <div class="form-row">
       <div class="form-group">
-        <div class="field-label">Project Name</div>
-        <input type="text" class="field-input" id="scope-project" placeholder="e.g. McDonalds Hendra — Fitout">
+        <label class="field-lbl">Project Name</label>
+        <input type="text" class="field-inp" id="scopeProject" placeholder="e.g. McDonalds Hendra — Fitout">
       </div>
       <div class="form-group">
-        <div class="field-label">Client / Builder</div>
-        <input type="text" class="field-input" id="scope-client" placeholder="e.g. Hacer Group">
+        <label class="field-lbl">Client / Builder</label>
+        <input type="text" class="field-inp" id="scopeClient" placeholder="e.g. Hacer Group">
       </div>
     </div>
-
     <div class="form-group" style="margin-bottom:20px">
-      <div class="field-label">Additional Notes (optional)</div>
-      <textarea class="notes-area" id="scope-notes" placeholder="Any specific inclusions, exclusions, or notes to factor in..."></textarea>
+      <label class="field-lbl">Additional Notes (optional)</label>
+      <textarea class="field-inp" id="scopeNotes" placeholder="Any specific inclusions, exclusions, or notes..."></textarea>
     </div>
-
-    <!-- Upload -->
-    <div class="upload-zone" id="scope-dropzone">
-      <input type="file" id="scope-files" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleFiles('scope', this.files)">
+    <div class="upload-zone" id="scopeZone">
+      <input type="file" id="scopeFiles" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addFiles('scope', this.files)">
       <div class="upload-icon">⬆</div>
       <div class="upload-text">Drop drawings here or click to browse</div>
       <div class="upload-sub">PDF · PNG · JPG — multiple files supported</div>
     </div>
-    <div class="file-list" id="scope-file-list"></div>
+    <div class="file-chips" id="scopeChips"></div>
+    <div class="error-bar" id="scopeError"></div>
+    <button class="btn-primary" id="scopeBtn" onclick="runScope()" style="width:auto;padding:12px 36px">Generate Scope Report</button>
+    <div class="status-bar" id="scopeStatus"><div class="spinner"></div><span id="scopeStatusText">Reading drawings...</span></div>
 
-    <div class="error-msg" id="scope-error"></div>
-
-    <button class="btn-primary" id="scope-btn" onclick="runScope()" style="width:auto;padding:12px 36px">
-      Generate Scope Report
-    </button>
-
-    <!-- Status -->
-    <div class="status-bar" id="scope-status" style="margin-top:20px">
-      <div class="spinner"></div>
-      <span id="scope-status-text">Reading drawings...</span>
-    </div>
-
-    <!-- Tab bar: Report / Pricing Emails -->
-    <div class="tab-bar" id="scope-tabs" style="display:none;margin-top:28px">
-      <button class="tab-btn active" onclick="switchScopeTab('report', this)">Scope Report</button>
-      <button class="tab-btn" onclick="switchScopeTab('emails', this)">Pricing Emails</button>
-    </div>
-
-    <!-- SCOPE REPORT -->
-    <div id="scope-tab-report">
-      <div class="report-container" id="scope-report">
-        <div class="report-toolbar">
-          <div class="report-toolbar-title">Scope Confirmation Report — Edit before sending</div>
-          <div class="toolbar-actions">
-            <button class="btn-sm" onclick="copyReport()">Copy Text</button>
-            <button class="btn-sm primary" onclick="downloadReport()">Download .txt</button>
+    <!-- tabs shown after generation -->
+    <div style="margin-top:28px; display:none" id="scopeTabs">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('report', this)">Scope Report</button>
+        <button class="tab" onclick="switchTab('emails', this)">Pricing Emails</button>
+      </div>
+      <div id="tabReport" class="tab-panel active">
+        <div class="panel show" id="scopeReport">
+          <div class="panel-toolbar">
+            <div class="panel-title">Scope Confirmation — Edit before sending</div>
+            <div class="toolbar-btns">
+              <button class="btn-sm" onclick="copyReport()">Copy</button>
+              <button class="btn-sm hi" onclick="downloadReport()">Download .txt</button>
+            </div>
           </div>
-        </div>
-        <div class="report-content" id="report-content"></div>
-        <div style="padding:16px 32px;border-top:1px solid var(--border)">
-          <div class="add-section-row">
-            <input type="text" class="add-item-input" id="new-section-name" placeholder="Add new section (e.g. Hydraulics)">
-            <button class="btn-sm" onclick="addSection()">+ Add Section</button>
+          <div class="panel-body">
+            <div id="reportSections"></div>
+            <div class="add-section-row">
+              <input type="text" class="add-inp" id="newSectionName" placeholder="Add new section...">
+              <button class="btn-sm" onclick="addSection()">+ Add Section</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- PRICING EMAILS -->
-    <div id="scope-tab-emails" style="display:none">
-      <div class="report-container" id="scope-emails" style="border-top-color:var(--border)">
-        <div class="report-toolbar">
-          <div class="report-toolbar-title">Pricing Request Emails</div>
-          <div class="toolbar-actions">
-            <button class="btn-sm primary" onclick="copyActiveEmail()">Copy Email</button>
+      <div id="tabEmails" class="tab-panel">
+        <div class="panel show" style="border-top-color:var(--border)">
+          <div class="panel-toolbar">
+            <div class="panel-title">Pricing Request Emails</div>
+            <div class="toolbar-btns">
+              <button class="btn-sm hi" onclick="copyEmail()">Copy Email</button>
+            </div>
           </div>
+          <div class="email-tabs" id="emailTabBar"></div>
+          <div id="emailPanels"></div>
         </div>
-        <div class="email-tabs" id="email-tab-bar"></div>
-        <div id="email-panels"></div>
       </div>
     </div>
   </div>
 
-  <!-- ── QUANTITY TAKEOFF VIEW ──────────────────── -->
-  <div id="view-takeoff" class="view">
-    <div class="view-header">
+  <!-- QUANTITY TAKEOFF -->
+  <div id="viewTakeoff" class="view">
+    <div class="view-hdr">
       <button class="back-btn" onclick="goTo('home')">← Back</button>
       <div class="view-title">Quantity Takeoff</div>
     </div>
-
     <div class="form-row">
       <div class="form-group">
-        <div class="field-label">Project Name</div>
-        <input type="text" class="field-input" id="to-project" placeholder="e.g. McDonalds Hendra — Fitout">
+        <label class="field-lbl">Project Name</label>
+        <input type="text" class="field-inp" id="toProject" placeholder="e.g. McDonalds Hendra — Fitout">
       </div>
       <div class="form-group">
-        <div class="field-label">Notes</div>
-        <input type="text" class="field-input" id="to-notes" placeholder="Any special instructions...">
+        <label class="field-lbl">Notes</label>
+        <input type="text" class="field-inp" id="toNotes" placeholder="Any special instructions...">
       </div>
     </div>
-
-    <div class="upload-zone" id="to-dropzone">
-      <input type="file" id="to-files" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="handleFiles('to', this.files)">
+    <div class="upload-zone" id="toZone">
+      <input type="file" id="toFiles" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addFiles('to', this.files)">
       <div class="upload-icon">⬆</div>
       <div class="upload-text">Drop drawings here or click to browse</div>
       <div class="upload-sub">PDF · PNG · JPG — multiple files supported</div>
     </div>
-    <div class="file-list" id="to-file-list"></div>
+    <div class="file-chips" id="toChips"></div>
+    <div class="error-bar" id="toError"></div>
+    <button class="btn-primary" id="toBtn" onclick="runTakeoff()" style="width:auto;padding:12px 36px">Extract Quantities</button>
+    <div class="status-bar" id="toStatus"><div class="spinner"></div><span id="toStatusText">Reading drawings...</span></div>
 
-    <div class="error-msg" id="to-error"></div>
-
-    <button class="btn-primary" id="to-btn" onclick="runTakeoff()" style="width:auto;padding:12px 36px">
-      Extract Quantities
-    </button>
-
-    <div class="status-bar" id="to-status" style="margin-top:20px">
-      <div class="spinner"></div>
-      <span id="to-status-text">Reading drawings...</span>
+    <!-- Checklist -->
+    <div class="checklist-wrap" id="checklist" style="display:none">
+      <div class="checklist-label">Drawing Progress</div>
+      <div class="checklist-items" id="checklistItems"></div>
     </div>
 
-    <!-- Drawing checklist -->
-    <div id="drawing-checklist" style="display:none;margin-top:20px;margin-bottom:8px">
-      <div style="font-family:var(--cond);font-size:11px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px">Drawing Progress</div>
-      <div id="checklist-items" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-    </div>
-
-    <div class="qty-table-wrap" id="qty-table-wrap" style="margin-top:12px">
-      <div class="qty-toolbar">
-        <div class="qty-toolbar-title">Extracted Quantities — Review & Edit</div>
-        <div class="toolbar-actions">
-          <button class="btn-sm" onclick="downloadEstimate()">Download Estimate Template</button>
+    <!-- Qty table -->
+    <div class="qty-panel" id="qtyPanel">
+      <div class="qty-panel-toolbar">
+        <div class="qty-panel-title">Extracted Quantities — Review & Edit</div>
+        <div class="toolbar-btns">
+          <button class="btn-sm hi" onclick="downloadQty()">Download CSV</button>
         </div>
       </div>
-      <div id="qty-table-content"></div>
+      <div id="qtyTableContent"></div>
     </div>
   </div>
 
 </main>
 
 <script>
-// ══════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════
-const state = {
+// ── STATE ──────────────────────────────────────────────────
+const S = {
   scopeFiles: [],
-  takeoffFiles: [],
-  reportSections: [],
-  emailDrafts: {},
+  toFiles: [],
+  sections: [],
+  emails: {},
   quantities: {},
-  activeEmailTab: 0
+  activeEmail: 0
 }
 
-// ══════════════════════════════════════════════
-// NAV
-// ══════════════════════════════════════════════
-function goTo(view) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'))
-  if (view === 'home') {
-    document.getElementById('view-home').classList.add('active')
-  } else if (view === 'scope') {
-    document.getElementById('view-scope').classList.add('active')
-  } else if (view === 'takeoff') {
-    document.getElementById('view-takeoff').classList.add('active')
-  }
-}
-
-function switchScopeTab(tab, btn) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
-  btn.classList.add('active')
-  document.getElementById('scope-tab-report').style.display = tab === 'report' ? 'block' : 'none'
-  document.getElementById('scope-tab-emails').style.display = tab === 'emails' ? 'block' : 'none'
-}
-
-// ══════════════════════════════════════════════
-// API KEY
-// ══════════════════════════════════════════════
-function showApiModal() {
-  const key = localStorage.getItem('bl_api_key') || ''
-  document.getElementById('apiKeyInput').value = key
+// ── API KEY ────────────────────────────────────────────────
+function openApiModal() {
+  document.getElementById('apiKeyInput').value = localStorage.getItem('bl_key') || ''
   document.getElementById('apiModal').classList.remove('hidden')
 }
-
-function saveApiKey() {
-  const key = document.getElementById('apiKeyInput').value.trim()
-  if (!key) return
-  localStorage.setItem('bl_api_key', key)
+function saveKey() {
+  const k = document.getElementById('apiKeyInput').value.trim()
+  if (!k) return
+  localStorage.setItem('bl_key', k)
   document.getElementById('apiModal').classList.add('hidden')
   updateApiStatus()
 }
-
 function updateApiStatus() {
-  const key = localStorage.getItem('bl_api_key')
-  const dot = document.getElementById('statusDot')
-  const txt = document.getElementById('statusText')
-  if (key) {
-    dot.classList.add('active')
-    txt.textContent = 'API KEY SET'
-  } else {
-    dot.classList.remove('active')
-    txt.textContent = 'NO API KEY'
-  }
+  const k = localStorage.getItem('bl_key')
+  document.getElementById('apiDot').className = 'api-dot' + (k ? ' on' : '')
+  document.getElementById('apiLabel').textContent = k ? 'API KEY SET' : 'NO API KEY'
+}
+function getKey() { return localStorage.getItem('bl_key') }
+
+// ── NAV ────────────────────────────────────────────────────
+function goTo(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'))
+  const map = { home: 'viewHome', scope: 'viewScope', takeoff: 'viewTakeoff' }
+  document.getElementById(map[view]).classList.add('active')
 }
 
-function getApiKey() {
-  return localStorage.getItem('bl_api_key')
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'))
+  btn.classList.add('active')
+  document.getElementById('tabReport').classList.toggle('active', tab === 'report')
+  document.getElementById('tabEmails').classList.toggle('active', tab === 'emails')
 }
 
-// ══════════════════════════════════════════════
-// FILE HANDLING
-// ══════════════════════════════════════════════
-function handleFiles(prefix, fileList) {
-  const arr = prefix === 'scope' ? state.scopeFiles : state.takeoffFiles
-  for (const f of fileList) {
-    if (!arr.find(x => x.name === f.name)) arr.push(f)
-  }
-  renderFileList(prefix)
+// ── FILES ──────────────────────────────────────────────────
+function addFiles(prefix, fileList) {
+  const arr = prefix === 'scope' ? S.scopeFiles : S.toFiles
+  for (const f of fileList) { if (!arr.find(x => x.name === f.name)) arr.push(f) }
+  renderChips(prefix)
 }
-
-function renderFileList(prefix) {
-  const arr = prefix === 'scope' ? state.scopeFiles : state.takeoffFiles
-  const el = document.getElementById(`${prefix === 'scope' ? 'scope' : 'to'}-file-list`)
+function renderChips(prefix) {
+  const arr = prefix === 'scope' ? S.scopeFiles : S.toFiles
+  const el = document.getElementById(prefix === 'scope' ? 'scopeChips' : 'toChips')
   el.innerHTML = arr.map((f, i) => `
     <div class="file-chip">
       <span>${f.name}</span>
-      <button class="file-chip-remove" onclick="removeFile('${prefix}', ${i})">×</button>
-    </div>
-  `).join('')
+      <button class="chip-x" onclick="removeFile('${prefix}',${i})">×</button>
+    </div>`).join('')
+}
+function removeFile(prefix, i) {
+  (prefix === 'scope' ? S.scopeFiles : S.toFiles).splice(i, 1)
+  renderChips(prefix)
 }
 
-function removeFile(prefix, idx) {
-  const arr = prefix === 'scope' ? state.scopeFiles : state.takeoffFiles
-  arr.splice(idx, 1)
-  renderFileList(prefix)
-}
-
-// ══════════════════════════════════════════════
-// FILE → BASE64
-// ══════════════════════════════════════════════
-async function fileToBase64(file) {
+// ── FILE → BASE64 ─────────────────────────────────────────
+function toBase64(file) {
   return new Promise((res, rej) => {
     const r = new FileReader()
     r.onload = () => res(r.result.split(',')[1])
@@ -1216,22 +463,16 @@ async function fileToBase64(file) {
     r.readAsDataURL(file)
   })
 }
-
-function getMediaType(file) {
+function mediaType(file) {
   const ext = file.name.split('.').pop().toLowerCase()
-  if (ext === 'pdf') return 'application/pdf'
-  if (ext === 'png') return 'image/png'
-  return 'image/jpeg'
+  return ext === 'pdf' ? 'application/pdf' : ext === 'png' ? 'image/png' : 'image/jpeg'
 }
 
-// ══════════════════════════════════════════════
-// API CALL
-// ══════════════════════════════════════════════
-async function callClaude(messages, systemPrompt, maxTokens = 4096) {
-  const key = getApiKey()
+// ── API CALL ───────────────────────────────────────────────
+async function callClaude(messages, system, maxTokens) {
+  const key = getKey()
   if (!key) throw new Error('No API key set. Click API KEY in the header.')
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -1239,291 +480,329 @@ async function callClaude(messages, systemPrompt, maxTokens = 4096) {
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages
-    })
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens || 4096, system, messages })
   })
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}))
-    const msg = err.error?.message || `API error ${response.status}`
-    console.error('API Error:', err)
-    throw new Error(msg)
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}))
+    throw new Error(err.error?.message || `API error ${resp.status}`)
   }
-
-  const data = await response.json()
+  const data = await resp.json()
   return data.content.map(b => b.text || '').join('')
 }
 
-// ══════════════════════════════════════════════
-// SCOPE CONFIRMATION
-// ══════════════════════════════════════════════
+// ── UI HELPERS ─────────────────────────────────────────────
+function showErr(prefix, msg) {
+  const el = document.getElementById(prefix === 'scope' ? 'scopeError' : 'toError')
+  el.textContent = msg; el.classList.add('show')
+}
+function hideErr(prefix) {
+  const el = document.getElementById(prefix === 'scope' ? 'scopeError' : 'toError')
+  el.classList.remove('show')
+}
+function setStatus(prefix, msg) {
+  document.getElementById(prefix === 'scope' ? 'scopeStatusText' : 'toStatusText').textContent = msg
+}
+function setLoading(prefix, on, msg) {
+  const btn = document.getElementById(prefix === 'scope' ? 'scopeBtn' : 'toBtn')
+  const bar = document.getElementById(prefix === 'scope' ? 'scopeStatus' : 'toStatus')
+  btn.disabled = on
+  bar.classList.toggle('show', on)
+  if (msg) setStatus(prefix, msg)
+}
+
+// ── SCOPE CONFIRMATION ─────────────────────────────────────
 async function runScope() {
-  const key = getApiKey()
-  if (!key) { showError('scope', 'No API key set. Click API KEY in the header.'); return }
-  if (!state.scopeFiles.length) { showError('scope', 'Please upload at least one drawing.'); return }
+  if (!getKey()) { showErr('scope', 'No API key set. Click API KEY in the header.'); return }
+  if (!S.scopeFiles.length) { showErr('scope', 'Please upload at least one drawing.'); return }
+  hideErr('scope')
 
-  const project = document.getElementById('scope-project').value.trim() || 'This Project'
-  const client = document.getElementById('scope-client').value.trim() || ''
-  const notes = document.getElementById('scope-notes').value.trim()
+  const project = document.getElementById('scopeProject').value.trim() || 'This Project'
+  const client  = document.getElementById('scopeClient').value.trim()
+  const notes   = document.getElementById('scopeNotes').value.trim()
 
-  hideError('scope')
-  setLoading('scope', true, 'Loading drawings...')
+  setLoading('scope', true, `Reading drawing 1 of ${S.scopeFiles.length}...`)
 
   try {
-    const msgContent = []
-    for (let i = 0; i < state.scopeFiles.length; i++) {
-      const file = state.scopeFiles[i]
-      setStatus('scope', `Loading drawing ${i + 1} of ${state.scopeFiles.length}...`)
-      const b64 = await fileToBase64(file)
-      const mt = getMediaType(file)
+    // Build message with all drawings
+    const msgs = []
+    for (let i = 0; i < S.scopeFiles.length; i++) {
+      const f = S.scopeFiles[i]
+      setStatus('scope', `Loading drawing ${i+1} of ${S.scopeFiles.length}: ${f.name}...`)
+      const b64 = await toBase64(f)
+      const mt  = mediaType(f)
       if (mt === 'application/pdf') {
-        msgContent.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
+        msgs.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
       } else {
-        msgContent.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
+        msgs.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
       }
+      msgs.push({ type: 'text', text: `(Drawing ${i+1}: ${f.name})` })
     }
+    msgs.push({ type: 'text', text: `Project: ${project}${client ? ', Client: ' + client : ''}${notes ? '. Notes: ' + notes : ''}.
 
-    msgContent.push({ type: 'text', text: `Project: ${project}${client ? ', Client: ' + client : ''}${notes ? ', Notes: ' + notes : ''}.
+Read all the mechanical drawings above and generate a full scope confirmation report for BL Air Mechanical Services Pty Ltd.
 
-Read all the mechanical drawings and generate a full scope confirmation report for BL Air Mechanical Services Pty Ltd.
-
-Format your response EXACTLY like this — use ### before each section title and - before each item:
+Use ### before each section title and - before each item. Include these sections:
 
 ### EQUIPMENT SCHEDULE
-- item 1
-- item 2
-
 ### DUCTWORK & SHEETMETAL
-- item 1
-
 ### DX PIPEWORK & REFRIGERANT
-- item 1
-
 ### ELECTRICAL
-- item 1
-
 ### GRILLES & DIFFUSERS
-- item 1
-
 ### FLEXIBLE DUCT
-- item 1
-
 ### SPIRAL DUCT
-- item 1
-
 ### SEISMIC & BUILDING WORKS
-- item 1
-
 ### COMMISSIONING
-- item 1
-
 ### EXCLUSIONS
 - Core holes (by builder)
 - Power supply to equipment (power adjacent, by electrical contractor)
 - BMS / building management system (unless noted)
 - Fire rating of penetrations (by others)
 - Hydraulic works
-
 ### ASSUMPTIONS
-- item 1
 
-Be thorough and specific using actual equipment models, sizes and quantities from the drawings.` })
+Be thorough and specific — use actual equipment models, sizes, quantities and airflows from the drawings.` })
 
     setStatus('scope', 'Generating scope report...')
 
     const result = await callClaude(
-      [{ role: 'user', content: msgContent }],
-      'You are a senior mechanical estimator at BL Air Mechanical Services Pty Ltd, a mechanical contractor based in Queensland Australia.',
-      4096)
+      [{ role: 'user', content: msgs }],
+      'You are a senior mechanical estimator at BL Air Mechanical Services Pty Ltd, a mechanical contractor in Queensland, Australia. Generate detailed, accurate scope confirmation reports from mechanical drawings.',
+      6000
+    )
 
-    // Parse plain text sections - no JSON
-    state.reportSections = []
-    const sections = result.split(/^###\s+/m).filter(s => s.trim())
-    for (const section of sections) {
-      const lines = section.trim().split('\n')
+    // Parse plain text sections
+    S.sections = []
+    const parts = result.split(/^###\s+/m).filter(s => s.trim())
+    for (const part of parts) {
+      const lines = part.trim().split('\n')
       const title = lines[0].trim()
       const items = lines.slice(1)
         .filter(l => l.trim().startsWith('-'))
-        .map(l => l.trim().replace(/^-\s*/, ''))
-        .filter(l => l.length > 0)
-      if (title && items.length > 0) {
-        state.reportSections.push({ title, items })
-      }
+        .map(l => l.trim().replace(/^-\s*/, '').trim())
+        .filter(l => l)
+      if (title) S.sections.push({ title, items })
     }
 
-    if (!state.reportSections.length) {
-      throw new Error('No sections found in response. Please try again.')
-    }
+    if (!S.sections.length) throw new Error('Could not parse scope report. Please try again.')
 
-    state.emailDrafts = {}
+    S.emails = {}
     renderReport()
-    document.getElementById('scope-report').classList.add('visible')
-    document.getElementById('scope-tabs').style.display = 'flex'
+    document.getElementById('scopeTabs').style.display = 'block'
     setLoading('scope', false)
 
-  } catch (err) {
+    // Generate emails in background
+    generateEmails(project, client)
+
+  } catch (e) {
     setLoading('scope', false)
-    showError('scope', err.message)
+    showErr('scope', e.message)
   }
 }
 
-async function runTakeoff() {
-  const key = getApiKey()
-  if (!key) { showError('to', 'No API key set. Click API KEY in the header.'); return }
-  if (!state.takeoffFiles.length) { showError('to', 'Please upload at least one drawing.'); return }
-
-  const project = document.getElementById('to-project').value.trim() || 'This Project'
-  const notes = document.getElementById('to-notes').value.trim()
-
-  hideError('to')
-  setLoading('to', true, 'Reading drawings...')
-
-  // Show checklist
-  const checklistEl = document.getElementById('drawing-checklist')
-  const checklistItems = document.getElementById('checklist-items')
-  checklistEl.style.display = 'block'
-  checklistItems.innerHTML = state.takeoffFiles.map((f, i) => `
-    <div id="check-${i}" style="
-      background:var(--surface2);
-      border:1px solid var(--border);
-      padding:5px 12px;
-      font-family:var(--mono);
-      font-size:11px;
-      color:var(--text-dim);
-      display:flex;
-      align-items:center;
-      gap:8px;
-    ">
-      <span id="check-icon-${i}" style="font-size:13px">⏳</span>
-      <span>${f.name}</span>
-    </div>
-  `).join('')
-
+async function generateEmails(project, client) {
   try {
-    let allExtracted = {}
-
-    for (let i = 0; i < state.takeoffFiles.length; i++) {
-      const file = state.takeoffFiles[i]
-      setStatus('to', `Processing drawing ${i + 1} of ${state.takeoffFiles.length}: ${file.name}...`)
-
-      // Update checklist — mark as in progress
-      const checkIcon = document.getElementById(`check-icon-${i}`)
-      const checkRow = document.getElementById(`check-${i}`)
-      if (checkIcon) checkIcon.textContent = '⟳'
-      if (checkRow) checkRow.style.borderColor = 'var(--orange)'
-
-      const b64 = await fileToBase64(file)
-      const mt = getMediaType(file)
-      const msgContent = []
-
-      if (mt === 'application/pdf') {
-        msgContent.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
-      } else {
-        msgContent.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
-      }
-      msgContent.push({ type: 'text', text: `File: ${file.name}. Extract ALL mechanical quantities from this drawing. Count every piece of equipment, measure duct runs, count ALL grilles and diffusers individually, measure spiral duct lengths per diameter, count flex duct runs. Cross-reference equipment schedules where present. Be thorough and precise — do not skip any items.` })
-
-      const systemPrompt = `You are an expert mechanical estimator. Extract quantities from mechanical drawings for BL Air Mechanical Services.
-
-Return ONLY valid JSON in this exact structure:
-{
-  "equipment": [
-    {"description": "Cassette Unit", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Split Ducted DX", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Split High Wall", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "VRF Indoor Units", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "AHU", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Rooftop Package Unit", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "ERV Unit", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Fan (general)", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Condensate Pump", "qty": 0, "unit": "no.", "notes": ""}
-  ],
-  "ductwork": [
-    {"description": "Rectangular Duct - No Insulation", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "Rectangular Duct - 50mm Internal", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "Rectangular Duct - 75mm Internal", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "Rectangular Duct - 100mm Internal", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "PVC Duct", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "Volume Control Dampers", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Fire Dampers", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Canvas Connections", "qty": 0, "unit": "no.", "notes": ""}
-  ],
-  "grilles": [
-    {"description": "595x595 Lay-in 4-Way Diffuser", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "595x595 Lay-in Eggcrate", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Linear Slot 1200mm", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Exhaust Grille 200x200", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Swirl Grille", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Weather Proof Louvre", "qty": 0, "unit": "no.", "notes": ""}
-  ],
-  "flexDuct": [
-    {"description": "Flex Duct R1.5 150mm (0-50 l/s)", "qty": 0, "unit": "lengths (6m)", "notes": ""},
-    {"description": "Flex Duct R1.5 200mm (51-100 l/s)", "qty": 0, "unit": "lengths (6m)", "notes": ""},
-    {"description": "Flex Duct R1.5 250mm (101-160 l/s)", "qty": 0, "unit": "lengths (6m)", "notes": ""},
-    {"description": "Flex Duct R1.5 300mm (161-250 l/s)", "qty": 0, "unit": "lengths (6m)", "notes": ""},
-    {"description": "Flex Duct R1.5 350mm (251-450 l/s)", "qty": 0, "unit": "lengths (6m)", "notes": ""}
-  ],
-  "spiralDuct": [
-    {"description": "102mm Spiral", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "150mm Spiral", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "200mm Spiral", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "250mm Spiral", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "300mm Spiral", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "350mm Spiral", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "400mm Spiral", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "450mm Spiral", "qty": 0, "unit": "m", "notes": ""},
-    {"description": "500mm Spiral", "qty": 0, "unit": "m", "notes": ""}
-  ],
-  "electrical": [
-    {"description": "High Wall Split (1ph)", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Cassette / Ducted 1ph", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Cassette / Ducted 3ph", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "VRF Indoor Units", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Fans Single Phase", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Fans Three Phase", "qty": 0, "unit": "no.", "notes": ""},
-    {"description": "Motorised Dampers", "qty": 0, "unit": "no.", "notes": ""}
-  ]
+    const scopeSummary = S.sections.map(s => s.title + ': ' + s.items.join(', ')).join('\n')
+    const result = await callClaude(
+      [{ role: 'user', content: `Project: ${project}${client ? ', Client: ' + client : ''}.\n\nScope summary:\n${scopeSummary}\n\nWrite 8 professional pricing request emails from BL Air Mechanical Services Pty Ltd. Return ONLY a JSON object with these keys: "AC Equipment", "Rectangular Ductwork", "Spiral Duct", "Fans & Grilles", "Duct Install Subcontractor", "Pipework Subcontractor", "Mechanical Electrical Subcontractor", "Rigging Subcontractor". Each value is the full email text. Return ONLY valid JSON, no other text.` }],
+      'You are a senior mechanical estimator writing professional pricing request emails for a mechanical contractor in Queensland, Australia.',
+      3000
+    )
+    const clean = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    S.emails = JSON.parse(clean)
+    renderEmails()
+  } catch (e) {
+    console.warn('Email generation failed:', e)
+  }
 }
 
-Only include items where qty > 0. Return ONLY valid JSON, no other text.`
+// ── REPORT RENDER ──────────────────────────────────────────
+function renderReport() {
+  document.getElementById('reportSections').innerHTML = S.sections.map((sec, si) => `
+    <div class="report-section" id="sec${si}">
+      <div class="section-hdr">
+        <div class="section-title">${sec.title}</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn-sm" onclick="addItem(${si})">+ Add</button>
+          <button class="btn-sm" onclick="removeSec(${si})" style="color:#c88">Remove</button>
+        </div>
+      </div>
+      <div class="section-body">
+        <ul class="section-items" id="items${si}">
+          ${sec.items.map((item, ii) => itemHTML(si, ii, item)).join('')}
+        </ul>
+        <div class="add-row">
+          <input type="text" class="add-inp" id="newItem${si}" placeholder="Add item..." onkeydown="if(event.key==='Enter')addItem(${si})">
+          <button class="btn-sm" onclick="addItem(${si})">+ Add</button>
+        </div>
+      </div>
+    </div>`).join('')
+}
+function itemHTML(si, ii, text) {
+  return `<li class="section-item" id="item${si}_${ii}">
+    <span class="item-bullet">—</span>
+    <div class="item-text" contenteditable="true" onblur="S.sections[${si}].items[${ii}]=this.textContent.trim()">${text}</div>
+    <button class="item-del" onclick="removeItem(${si},${ii})">×</button>
+  </li>`
+}
+function addItem(si) {
+  const inp = document.getElementById(`newItem${si}`)
+  const txt = inp.value.trim()
+  if (!txt) return
+  S.sections[si].items.push(txt)
+  inp.value = ''
+  document.getElementById(`items${si}`).insertAdjacentHTML('beforeend', itemHTML(si, S.sections[si].items.length-1, txt))
+}
+function removeItem(si, ii) {
+  document.getElementById(`item${si}_${ii}`)?.remove()
+  S.sections[si].items.splice(ii, 1)
+}
+function removeSec(si) {
+  S.sections.splice(si, 1)
+  renderReport()
+}
+function addSection() {
+  const inp = document.getElementById('newSectionName')
+  const name = inp.value.trim().toUpperCase()
+  if (!name) return
+  S.sections.push({ title: name, items: [] })
+  inp.value = ''
+  renderReport()
+}
+function copyReport() {
+  let txt = `SCOPE CONFIRMATION — ${document.getElementById('scopeProject').value || ''}\nBL Air Mechanical Services Pty Ltd\n${'='.repeat(60)}\n\n`
+  S.sections.forEach(s => { txt += `${s.title}\n${'-'.repeat(s.title.length)}\n`; s.items.forEach(i => txt += `• ${i}\n`); txt += '\n' })
+  navigator.clipboard.writeText(txt).then(() => alert('Copied to clipboard'))
+}
+function downloadReport() {
+  const project = document.getElementById('scopeProject').value || 'Scope'
+  let txt = `SCOPE CONFIRMATION — ${project.toUpperCase()}\nBL Air Mechanical Services Pty Ltd\n${'='.repeat(60)}\n\n`
+  S.sections.forEach(s => { txt += `${s.title}\n${'-'.repeat(s.title.length)}\n`; s.items.forEach(i => txt += `• ${i}\n`); txt += '\n' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(new Blob([txt], { type: 'text/plain' }))
+  a.download = `${project.replace(/\s+/g,'_')}_Scope.txt`
+  a.click()
+}
 
-      const batchResult = await callClaude([{ role: 'user', content }], systemPrompt, 3000)
-      const cleanBatch = batchResult.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+// ── EMAILS ────────────────────────────────────────────────
+function renderEmails() {
+  const keys = Object.keys(S.emails)
+  if (!keys.length) return
+  document.getElementById('emailTabBar').innerHTML = keys.map((k, i) =>
+    `<button class="email-tab${i===0?' active':''}" onclick="switchEmail(${i},this)">${k}</button>`).join('')
+  document.getElementById('emailPanels').innerHTML = keys.map((k, i) =>
+    `<div class="email-panel${i===0?' active':''}" id="ep${i}">
+      <label class="field-lbl" style="margin:12px 16px 8px;display:block">${k}</label>
+      <textarea class="email-body" id="eb${i}">${S.emails[k]}</textarea>
+    </div>`).join('')
+  S.activeEmail = 0
+}
+function switchEmail(i, btn) {
+  document.querySelectorAll('.email-tab').forEach(t => t.classList.remove('active'))
+  document.querySelectorAll('.email-panel').forEach(p => p.classList.remove('active'))
+  btn.classList.add('active')
+  document.getElementById(`ep${i}`)?.classList.add('active')
+  S.activeEmail = i
+}
+function copyEmail() {
+  const ta = document.getElementById(`eb${S.activeEmail}`)
+  if (ta) navigator.clipboard.writeText(ta.value).then(() => alert('Email copied'))
+}
 
+// ── QUANTITY TAKEOFF ───────────────────────────────────────
+async function runTakeoff() {
+  if (!getKey()) { showErr('to', 'No API key set. Click API KEY in the header.'); return }
+  if (!S.toFiles.length) { showErr('to', 'Please upload at least one drawing.'); return }
+  hideErr('to')
+
+  setLoading('to', true, 'Starting...')
+
+  // Show checklist
+  const cl = document.getElementById('checklist')
+  const cli = document.getElementById('checklistItems')
+  cl.style.display = 'block'
+  cli.innerHTML = S.toFiles.map((f, i) =>
+    `<div class="check-chip" id="cc${i}"><span id="ci${i}">⏳</span><span>${f.name}</span></div>`
+  ).join('')
+
+  try {
+    let allQty = {}
+
+    for (let i = 0; i < S.toFiles.length; i++) {
+      const f = S.toFiles[i]
+      setStatus('to', `Processing ${i+1} of ${S.toFiles.length}: ${f.name}...`)
+
+      // Update checklist
+      const chip = document.getElementById(`cc${i}`)
+      const icon = document.getElementById(`ci${i}`)
+      if (chip) chip.className = 'check-chip processing'
+      if (icon) icon.textContent = '⟳'
+
+      const b64 = await toBase64(f)
+      const mt  = mediaType(f)
+      const fileContent = []
+
+      if (mt === 'application/pdf') {
+        fileContent.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
+      } else {
+        fileContent.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
+      }
+      fileContent.push({ type: 'text', text: `File: ${f.name}. Extract ALL mechanical quantities from this drawing. Count every piece of equipment, every grille and diffuser individually, measure all duct runs, count flex duct lengths, measure spiral duct per diameter. Cross-reference equipment schedules. Be thorough — do not skip any items.` })
+
+      const systemPrompt = `You are an expert mechanical estimator. Extract quantities from mechanical drawings for BL Air Mechanical Services Pty Ltd.
+
+Return ONLY valid JSON with this exact structure (omit items with qty 0):
+{
+  "equipment": [{"description": "...", "qty": 0, "unit": "no.", "notes": ""}],
+  "ductwork": [{"description": "...", "qty": 0, "unit": "m", "notes": ""}],
+  "grilles": [{"description": "...", "qty": 0, "unit": "no.", "notes": ""}],
+  "flexDuct": [{"description": "...", "qty": 0, "unit": "lengths (6m)", "notes": ""}],
+  "spiralDuct": [{"description": "...", "qty": 0, "unit": "m", "notes": ""}],
+  "electrical": [{"description": "...", "qty": 0, "unit": "no.", "notes": ""}]
+}
+Return ONLY the JSON object, no other text.`
+
+      let parsed = null
       try {
-        const parsed = JSON.parse(cleanBatch)
-        // Merge quantities
+        const result = await callClaude([{ role: 'user', content: fileContent }], systemPrompt, 3000)
+        const clean = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+        parsed = JSON.parse(clean)
+      } catch (e) {
+        console.warn('Parse error for', f.name, e)
+      }
+
+      if (parsed) {
+        // Merge into allQty
         for (const [cat, items] of Object.entries(parsed)) {
-          if (!allExtracted[cat]) allExtracted[cat] = {}
+          if (!allQty[cat]) allQty[cat] = {}
           for (const item of items) {
-            if (!allExtracted[cat][item.description]) {
-              allExtracted[cat][item.description] = { ...item }
+            if (!item.description) continue
+            if (!allQty[cat][item.description]) {
+              allQty[cat][item.description] = { ...item }
             } else {
-              allExtracted[cat][item.description].qty += item.qty
+              allQty[cat][item.description].qty += (item.qty || 0)
             }
           }
         }
-      } catch(e) {
-        console.warn('Batch parse error:', e)
+        if (chip) chip.className = 'check-chip done'
+        if (icon) { icon.textContent = '✓'; icon.style.color = 'var(--green)' }
+      } else {
+        if (chip) chip.className = 'check-chip warn'
+        if (icon) icon.textContent = '⚠'
       }
     }
 
-    state.quantities = allExtracted
+    S.quantities = allQty
     renderQtyTable()
-    document.getElementById('qty-table-wrap').classList.add('visible')
+    document.getElementById('qtyPanel').classList.add('show')
     setLoading('to', false)
 
-  } catch(err) {
+  } catch (e) {
     setLoading('to', false)
-    showError('to', err.message)
+    showErr('to', e.message)
   }
 }
 
-const CATEGORY_LABELS = {
+const CAT_LABELS = {
   equipment: 'Equipment',
   ductwork: 'Ductwork & Accessories',
   grilles: 'Grilles & Diffusers',
@@ -1533,117 +812,52 @@ const CATEGORY_LABELS = {
 }
 
 function renderQtyTable() {
-  const container = document.getElementById('qty-table-content')
-  let html = '<table>'
-  html += '<thead><tr><th>Description</th><th>Unit</th><th style="text-align:right">Qty</th><th>Notes</th></tr></thead><tbody>'
-
-  for (const [cat, items] of Object.entries(state.quantities)) {
-    const itemArr = Object.values(items).filter(i => i.qty > 0 || true)
-    if (!itemArr.length) continue
-
-    html += `<tr><td colspan="4" class="section-divider">${CATEGORY_LABELS[cat] || cat}</td></tr>`
-
-    itemArr.forEach((item, idx) => {
+  let html = '<table><thead><tr><th>Description</th><th>Unit</th><th style="text-align:right">Qty</th><th>Notes</th></tr></thead><tbody>'
+  for (const [cat, items] of Object.entries(S.quantities)) {
+    const arr = Object.values(items).filter(i => i.qty > 0)
+    if (!arr.length) continue
+    html += `<tr class="cat-row"><td colspan="4">${CAT_LABELS[cat] || cat}</td></tr>`
+    arr.forEach(item => {
       html += `<tr>
         <td>${item.description}</td>
         <td style="color:var(--text-dim);font-family:var(--mono);font-size:11px">${item.unit}</td>
-        <td class="qty-input"><input type="number" value="${item.qty}" min="0" step="0.5"
-          onchange="updateQty('${cat}','${item.description}',this.value)"></td>
+        <td class="qty-cell"><input type="number" value="${item.qty}" min="0" step="0.5" onchange="S.quantities['${cat}']['${item.description}'].qty=parseFloat(this.value)||0"></td>
         <td style="color:var(--text-dim);font-size:12px">${item.notes || ''}</td>
       </tr>`
     })
   }
-
   html += '</tbody></table>'
-  container.innerHTML = html
+  document.getElementById('qtyTableContent').innerHTML = html
 }
 
-function updateQty(cat, desc, val) {
-  if (state.quantities[cat] && state.quantities[cat][desc]) {
-    state.quantities[cat][desc].qty = parseFloat(val) || 0
-  }
-}
-
-function downloadEstimate() {
-  // Build a summary CSV of quantities for reference
-  // (Full spreadsheet population requires the template file)
+function downloadQty() {
   let csv = 'Category,Description,Qty,Unit,Notes\n'
-  for (const [cat, items] of Object.entries(state.quantities)) {
+  for (const [cat, items] of Object.entries(S.quantities)) {
     for (const item of Object.values(items)) {
-      if (item.qty > 0) {
-        csv += `"${CATEGORY_LABELS[cat] || cat}","${item.description}",${item.qty},"${item.unit}","${item.notes || ''}"\n`
-      }
+      if (item.qty > 0) csv += `"${CAT_LABELS[cat]||cat}","${item.description}",${item.qty},"${item.unit}","${item.notes||''}"\n`
     }
   }
-  const project = document.getElementById('to-project').value || 'Takeoff'
-  const blob = new Blob([csv], { type: 'text/csv' })
+  const project = document.getElementById('toProject').value || 'Takeoff'
   const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = `${project.replace(/\s+/g, '_')}_Quantities.csv`
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
+  a.download = `${project.replace(/\s+/g,'_')}_Quantities.csv`
   a.click()
 }
 
-// ══════════════════════════════════════════════
-// UI HELPERS
-// ══════════════════════════════════════════════
-function setLoading(prefix, loading, msg) {
-  const btn = document.getElementById(`${prefix === 'scope' ? 'scope' : 'to'}-btn`)
-  const bar = document.getElementById(`${prefix === 'scope' ? 'scope' : 'to'}-status`)
-  const txt = document.getElementById(`${prefix === 'scope' ? 'scope' : 'to'}-status-text`)
-  btn.disabled = loading
-  if (loading) {
-    bar.classList.add('visible')
-    txt.textContent = msg || 'Processing...'
-  } else {
-    bar.classList.remove('visible')
-  }
+// ── DRAG & DROP ────────────────────────────────────────────
+function setupDrop(id, prefix) {
+  const z = document.getElementById(id)
+  if (!z) return
+  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over') })
+  z.addEventListener('dragleave', () => z.classList.remove('drag-over'))
+  z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('drag-over'); addFiles(prefix, e.dataTransfer.files) })
 }
 
-function setStatus(prefix, msg) {
-  const txt = document.getElementById(`${prefix === 'scope' ? 'scope' : 'to'}-status-text`)
-  if (txt) txt.textContent = msg
-}
-
-function showError(prefix, msg) {
-  const el = document.getElementById(`${prefix === 'scope' ? 'scope' : 'to'}-error`)
-  el.textContent = msg
-  el.classList.add('visible')
-}
-
-function hideError(prefix) {
-  const el = document.getElementById(`${prefix === 'scope' ? 'scope' : 'to'}-error`)
-  el.classList.remove('visible')
-}
-
-// Drag and drop
-function setupDrop(zoneId, prefix) {
-  const zone = document.getElementById(zoneId)
-  if (!zone) return
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over') })
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'))
-  zone.addEventListener('drop', e => {
-    e.preventDefault()
-    zone.classList.remove('drag-over')
-    handleFiles(prefix, e.dataTransfer.files)
-  })
-}
-
-// ══════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════
-// Show warning if opened as local file directly
-if (window.location.protocol === 'file:') {
-  document.getElementById('local-warning').style.display = 'block'
-}
-
+// ── INIT ───────────────────────────────────────────────────
 updateApiStatus()
-setupDrop('scope-dropzone', 'scope')
-setupDrop('to-dropzone', 'to')
-
-// Show API modal on first load if no key
-if (!getApiKey()) {
-  setTimeout(() => document.getElementById('apiModal').classList.remove('hidden'), 400)
-}
+setupDrop('scopeZone', 'scope')
+setupDrop('toZone', 'to')
+if (!getKey()) setTimeout(() => document.getElementById('apiModal').classList.remove('hidden'), 300)
 </script>
 </body>
 </html>
