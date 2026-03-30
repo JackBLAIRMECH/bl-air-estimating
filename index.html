@@ -59,7 +59,8 @@ main{max-width:1100px;margin:0 auto;padding:32px}
 textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
 .zone{border:2px dashed var(--border);padding:32px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--surface);margin-bottom:12px}
 .zone:hover,.zone.drag-over{border-color:var(--orange)}
-.zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2}
+.zone-icon,.zone-text,.zone-sub{position:relative;z-index:1;pointer-events:none}
 .zone-icon{font-size:24px;margin-bottom:8px;opacity:.4}
 .zone-text{font-family:var(--cond);font-size:15px;letter-spacing:1px;color:var(--text-mid);margin-bottom:4px}
 .zone-sub{font-size:11px;color:var(--text-dim);font-family:var(--mono)}
