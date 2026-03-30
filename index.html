@@ -376,105 +376,41 @@ td.qty-cell input:focus { border-color: var(--orange); }
       </div>
     </div>
 
-    <!-- Section tabs -->
-    <div style="display:flex;border-bottom:2px solid var(--border);margin-bottom:24px;overflow-x:auto" id="secTabBar">
-      <button class="sec-tab active" onclick="swSecTab(0,this)" id="stab0">Equipment<span class="sec-badge" id="sbadge0">0</span></button>
-      <button class="sec-tab" onclick="swSecTab(1,this)" id="stab1">Ductwork<span class="sec-badge" id="sbadge1">0</span></button>
-      <button class="sec-tab" onclick="swSecTab(2,this)" id="stab2">Grilles &amp; Diffusers<span class="sec-badge" id="sbadge2">0</span></button>
-      <button class="sec-tab" onclick="swSecTab(3,this)" id="stab3">Flexible Duct<span class="sec-badge" id="sbadge3">0</span></button>
-      <button class="sec-tab" onclick="swSecTab(4,this)" id="stab4">Spiral Duct<span class="sec-badge" id="sbadge4">0</span></button>
-      <button class="sec-tab" onclick="swSecTab(5,this)" id="stab5">Electrical<span class="sec-badge" id="sbadge5">0</span></button>
+    <!-- Upload zone -->
+    <div style="margin-bottom:12px">
+      <button class="btn-sm" style="padding:10px 20px;font-size:12px;border-style:dashed;border-width:2px" onclick="document.getElementById('toFileInp').click()">⬆ Select All Drawings</button>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-left:12px">Upload the full drawing set — Claude will sort them automatically</span>
+      <input type="file" id="toFileInp" multiple accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="addFiles('to',this.files)">
+    </div>
+    <div class="file-chips" id="toChips"></div>
+    <div class="error-bar" id="toError"></div>
+    <button class="btn-primary" id="toBtn" onclick="runTakeoff()" style="width:auto;padding:12px 36px">Extract Quantities</button>
+    <div class="status-bar" id="toStatus"><div class="spinner"></div><span id="toStatusText"></span></div>
+
+    <!-- Drawing classification checklist -->
+    <div style="display:none;margin:16px 0" id="toChecklist">
+      <div style="font-family:var(--cond);font-size:11px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px">Drawing Progress</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px" id="toChecklistItems"></div>
     </div>
 
-    <!-- Section panels -->
-    <div id="secPanel0" class="sec-panel active">
-      <div class="sec-hint"><strong>Equipment Schedule</strong> — Upload schedule sheets only (e.g. M002). Claude counts from the schedule table — not from floor plans. This prevents double-counting.</div>
-      <div style="margin-bottom:12px">
-        <button class="btn-sm" style="padding:10px 20px;font-size:12px;border-style:dashed;border-width:2px" onclick="document.getElementById('fi0').click()">⬆ Select Schedule Sheets</button>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-left:12px">e.g. M002 SCHEDULES</span>
-        <input type="file" id="fi0" multiple accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="addSecFiles(0,this.files)">
+    <!-- Results tabs -->
+    <div style="display:none;margin-top:20px" id="toResultsWrap">
+      <div style="display:flex;border-bottom:2px solid var(--border);overflow-x:auto;margin-bottom:0" id="toTabBar">
+        <button class="sec-tab active" onclick="swToTab(0,this)" id="totab0">Equipment<span class="sec-badge" id="tobadge0">0</span></button>
+        <button class="sec-tab" onclick="swToTab(1,this)" id="totab1">Ductwork<span class="sec-badge" id="tobadge1">0</span></button>
+        <button class="sec-tab" onclick="swToTab(2,this)" id="totab2">Grilles &amp; Diffusers<span class="sec-badge" id="tobadge2">0</span></button>
+        <button class="sec-tab" onclick="swToTab(3,this)" id="totab3">Flexible Duct<span class="sec-badge" id="tobadge3">0</span></button>
+        <button class="sec-tab" onclick="swToTab(4,this)" id="totab4">Spiral Duct<span class="sec-badge" id="tobadge4">0</span></button>
+        <button class="sec-tab" onclick="swToTab(5,this)" id="totab5">Electrical<span class="sec-badge" id="tobadge5">0</span></button>
       </div>
-      <div class="file-chips" id="sc0"></div>
-      <div class="error-bar" id="se0"></div>
-      <button class="btn-primary" onclick="runSec(0)" id="sb0" style="width:auto;padding:12px 36px">Extract Equipment</button>
-      <div class="status-bar" id="ss0"><div class="spinner"></div><span id="sst0"></span></div>
-      <div class="checklist-wrap" id="scl0"><div class="checklist-label">Drawing Progress</div><div class="checklist-items" id="sci0"></div></div>
-      <div class="qty-panel" id="sq0"><div class="qty-panel-toolbar"><div class="qty-panel-title">Equipment — Review &amp; Edit</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlSec(0)">Download CSV</button></div></div><div id="sqt0"></div></div>
-    </div>
-
-    <div id="secPanel1" class="sec-panel">
-      <div class="sec-hint"><strong>Ductwork</strong> — Upload floor plans and roof plans (e.g. M100, M200). Claude identifies duct sizes and counts fittings. <em>You measure run lengths in Bluebeam</em> — quantities shown are placeholders to update.</div>
-      <div style="margin-bottom:12px">
-        <button class="btn-sm" style="padding:10px 20px;font-size:12px;border-style:dashed;border-width:2px" onclick="document.getElementById('fi1').click()">⬆ Select Floor/Roof Plans</button>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-left:12px">e.g. M100, M200</span>
-        <input type="file" id="fi1" multiple accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="addSecFiles(1,this.files)">
+      <div id="toTabPanel0" class="to-tab-panel active">
+        <div class="qty-panel show" style="margin-top:0;border-top-width:2px"><div class="qty-panel-toolbar"><div class="qty-panel-title">Equipment — Review &amp; Edit</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlToSec(0)">Download CSV</button></div></div><div id="toqt0"></div></div>
       </div>
-      <div class="file-chips" id="sc1"></div>
-      <div class="error-bar" id="se1"></div>
-      <button class="btn-primary" onclick="runSec(1)" id="sb1" style="width:auto;padding:12px 36px">Extract Ductwork</button>
-      <div class="status-bar" id="ss1"><div class="spinner"></div><span id="sst1"></span></div>
-      <div class="checklist-wrap" id="scl1"><div class="checklist-label">Drawing Progress</div><div class="checklist-items" id="sci1"></div></div>
-      <div class="qty-panel" id="sq1"><div class="qty-panel-toolbar"><div class="qty-panel-title">Ductwork — Enter measured lengths then Download</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlSec(1)">Download CSV</button></div></div><div id="sqt1"></div></div>
-    </div>
-
-    <div id="secPanel2" class="sec-panel">
-      <div class="sec-hint"><strong>Grilles &amp; Diffusers</strong> — Upload floor plans only (e.g. M100). Claude counts every grille individually by type, size and colour. Do not upload schedule or detail sheets.</div>
-      <div style="margin-bottom:12px">
-        <button class="btn-sm" style="padding:10px 20px;font-size:12px;border-style:dashed;border-width:2px" onclick="document.getElementById('fi2').click()">⬆ Select Floor Plans</button>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-left:12px">e.g. M100 MECHANICAL FLOOR PLAN</span>
-        <input type="file" id="fi2" multiple accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="addSecFiles(2,this.files)">
-      </div>
-      <div class="file-chips" id="sc2"></div>
-      <div class="error-bar" id="se2"></div>
-      <button class="btn-primary" onclick="runSec(2)" id="sb2" style="width:auto;padding:12px 36px">Count Grilles &amp; Diffusers</button>
-      <div class="status-bar" id="ss2"><div class="spinner"></div><span id="sst2"></span></div>
-      <div class="checklist-wrap" id="scl2"><div class="checklist-label">Drawing Progress</div><div class="checklist-items" id="sci2"></div></div>
-      <div class="qty-panel" id="sq2"><div class="qty-panel-toolbar"><div class="qty-panel-title">Grilles &amp; Diffusers — Review &amp; Edit</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlSec(2)">Download CSV</button></div></div><div id="sqt2"></div></div>
-    </div>
-
-    <div id="secPanel3" class="sec-panel">
-      <div class="sec-hint"><strong>Flexible Duct</strong> — Upload floor plans only. Claude counts flex connections and maps airflow L/s to diameter. Each connection = 1 bag (6m) — a 3m run still counts as 1 bag.</div>
-      <div style="margin-bottom:12px">
-        <button class="btn-sm" style="padding:10px 20px;font-size:12px;border-style:dashed;border-width:2px" onclick="document.getElementById('fi3').click()">⬆ Select Floor Plans</button>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-left:12px">e.g. M100 MECHANICAL FLOOR PLAN</span>
-        <input type="file" id="fi3" multiple accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="addSecFiles(3,this.files)">
-      </div>
-      <div class="file-chips" id="sc3"></div>
-      <div class="error-bar" id="se3"></div>
-      <button class="btn-primary" onclick="runSec(3)" id="sb3" style="width:auto;padding:12px 36px">Count Flex Duct Bags</button>
-      <div class="status-bar" id="ss3"><div class="spinner"></div><span id="sst3"></span></div>
-      <div class="checklist-wrap" id="scl3"><div class="checklist-label">Drawing Progress</div><div class="checklist-items" id="sci3"></div></div>
-      <div class="qty-panel" id="sq3"><div class="qty-panel-toolbar"><div class="qty-panel-title">Flexible Duct — Bags (6m each)</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlSec(3)">Download CSV</button></div></div><div id="sqt3"></div></div>
-    </div>
-
-    <div id="secPanel4" class="sec-panel">
-      <div class="sec-hint"><strong>Spiral Duct</strong> — Upload floor and roof plans. Claude identifies circular duct diameters. <em>You measure run lengths in Bluebeam</em> — quantities shown are placeholders per diameter.</div>
-      <div style="margin-bottom:12px">
-        <button class="btn-sm" style="padding:10px 20px;font-size:12px;border-style:dashed;border-width:2px" onclick="document.getElementById('fi4').click()">⬆ Select Floor/Roof Plans</button>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-left:12px">e.g. M100, M200</span>
-        <input type="file" id="fi4" multiple accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="addSecFiles(4,this.files)">
-      </div>
-      <div class="file-chips" id="sc4"></div>
-      <div class="error-bar" id="se4"></div>
-      <button class="btn-primary" onclick="runSec(4)" id="sb4" style="width:auto;padding:12px 36px">Extract Spiral Duct</button>
-      <div class="status-bar" id="ss4"><div class="spinner"></div><span id="sst4"></span></div>
-      <div class="checklist-wrap" id="scl4"><div class="checklist-label">Drawing Progress</div><div class="checklist-items" id="sci4"></div></div>
-      <div class="qty-panel" id="sq4"><div class="qty-panel-toolbar"><div class="qty-panel-title">Spiral Duct — Enter measured lengths then Download</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlSec(4)">Download CSV</button></div></div><div id="sqt4"></div></div>
-    </div>
-
-    <div id="secPanel5" class="sec-panel">
-      <div class="sec-hint"><strong>Electrical</strong> — Upload schedule sheets and floor plans. Claude counts electrical connections, isolators, motorised dampers and controls for the electrical subcontractor package.</div>
-      <div style="margin-bottom:12px">
-        <button class="btn-sm" style="padding:10px 20px;font-size:12px;border-style:dashed;border-width:2px" onclick="document.getElementById('fi5').click()">⬆ Select Drawings</button>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-left:12px">e.g. M002, M100</span>
-        <input type="file" id="fi5" multiple accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="addSecFiles(5,this.files)">
-      </div>
-      <div class="file-chips" id="sc5"></div>
-      <div class="error-bar" id="se5"></div>
-      <button class="btn-primary" onclick="runSec(5)" id="sb5" style="width:auto;padding:12px 36px">Extract Electrical</button>
-      <div class="status-bar" id="ss5"><div class="spinner"></div><span id="sst5"></span></div>
-      <div class="checklist-wrap" id="scl5"><div class="checklist-label">Drawing Progress</div><div class="checklist-items" id="sci5"></div></div>
-      <div class="qty-panel" id="sq5"><div class="qty-panel-toolbar"><div class="qty-panel-title">Electrical — Review &amp; Edit</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlSec(5)">Download CSV</button></div></div><div id="sqt5"></div></div>
+      <div id="toTabPanel1" class="to-tab-panel"><div class="qty-panel show" style="margin-top:0;border-top-width:2px"><div class="qty-panel-toolbar"><div class="qty-panel-title">Ductwork — Update lengths in Bluebeam then Download</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlToSec(1)">Download CSV</button></div></div><div id="toqt1"></div></div></div>
+      <div id="toTabPanel2" class="to-tab-panel"><div class="qty-panel show" style="margin-top:0;border-top-width:2px"><div class="qty-panel-toolbar"><div class="qty-panel-title">Grilles &amp; Diffusers — Review &amp; Edit</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlToSec(2)">Download CSV</button></div></div><div id="toqt2"></div></div></div>
+      <div id="toTabPanel3" class="to-tab-panel"><div class="qty-panel show" style="margin-top:0;border-top-width:2px"><div class="qty-panel-toolbar"><div class="qty-panel-title">Flexible Duct — Bags (6m each)</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlToSec(3)">Download CSV</button></div></div><div id="toqt3"></div></div></div>
+      <div id="toTabPanel4" class="to-tab-panel"><div class="qty-panel show" style="margin-top:0;border-top-width:2px"><div class="qty-panel-toolbar"><div class="qty-panel-title">Spiral Duct — Update lengths in Bluebeam then Download</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlToSec(4)">Download CSV</button></div></div><div id="toqt4"></div></div></div>
+      <div id="toTabPanel5" class="to-tab-panel"><div class="qty-panel show" style="margin-top:0;border-top-width:2px"><div class="qty-panel-toolbar"><div class="qty-panel-title">Electrical — Review &amp; Edit</div><div class="toolbar-btns"><button class="btn-sm hi" onclick="dlToSec(5)">Download CSV</button></div></div><div id="toqt5"></div></div></div>
     </div>
 
   </div>
@@ -799,171 +735,287 @@ function copyEmail() {
   if (ta) navigator.clipboard.writeText(ta.value).then(() => alert('Email copied'))
 }
 
-// ── TAKEOFF STATE ─────────────────────────────────────────────
-const secFiles = [[],[],[],[],[],[]]
-const secData  = [[],[],[],[],[],[]]
+// ── QUANTITY TAKEOFF ─────────────────────────────────────────
+// Two-pass approach:
+// Pass 1: Read all drawings, identify schedule sheet, classify each drawing by type, extract equipment from schedule
+// Pass 2: Read each floor/roof plan individually, extract quantities, cross-reference equipment list
 
-function swSecTab(i, btn) {
+const TO = {
+  data: { equipment:[], ductwork:[], grilles:[], flexDuct:[], spiralDuct:[], electrical:[] },
+  equipmentList: [],   // built from schedule in pass 1
+  drawingTypes: {}     // filename -> type (schedule/floor_plan/roof_plan/detail/cover)
+}
+
+const TO_CATS = ['equipment','ductwork','grilles','flexDuct','spiralDuct','electrical']
+const TO_LABELS = ['Equipment','Ductwork','Grilles & Diffusers','Flexible Duct','Spiral Duct','Electrical']
+
+function swToTab(i, btn) {
   document.querySelectorAll('.sec-tab').forEach(x => x.classList.remove('active'))
-  document.querySelectorAll('.sec-panel').forEach(x => x.classList.remove('active'))
+  document.querySelectorAll('.to-tab-panel').forEach(x => x.classList.remove('active'))
   btn.classList.add('active')
-  document.getElementById('secPanel' + i).classList.add('active')
+  document.getElementById('toTabPanel' + i).classList.add('active')
 }
 
-function addSecFiles(n, files) {
-  for (const f of files) { if (!secFiles[n].find(x => x.name === f.name)) secFiles[n].push(f) }
-  rSecChips(n)
+function setChipState(id, state, label) {
+  const chip = document.getElementById(id)
+  if (!chip) return
+  const icon = chip.querySelector('.cc-icon')
+  const stateMap = {
+    queued:     { cls:'check-chip',             icon:'⏳' },
+    processing: { cls:'check-chip processing',  icon:'⟳' },
+    done:       { cls:'check-chip done',        icon:'✓' },
+    nodata:     { cls:'check-chip warn',        icon:'⚠' },
+    skip:       { cls:'check-chip',             icon:'—' }
+  }
+  const s = stateMap[state] || stateMap.queued
+  chip.className = s.cls
+  if (icon) icon.innerHTML = state === 'nodata'
+    ? '⚠ <span style="font-size:10px">No data</span>'
+    : s.icon
+  if (label) { const lbl = chip.querySelector('.cc-lbl'); if(lbl) lbl.textContent = label }
 }
-function rSecChips(n) {
-  document.getElementById('sc' + n).innerHTML = secFiles[n].map((f, i) =>
-    `<div class="file-chip"><span>${f.name}</span><button class="chip-x" onclick="secFiles[${n}].splice(${i},1);rSecChips(${n})">×</button></div>`
-  ).join('')
-}
 
-const SEC_CFG = [
-  { name: 'Equipment', prompt: `You are an expert mechanical estimator. Extract equipment from this SCHEDULE SHEET ONLY.
-Count each item exactly once from the schedule table. DO NOT count from floor plans or detail sheets.
-Return ONLY a valid JSON array — no markdown, no other text:
-[{"description":"exact model name and tag e.g. Actron PKY620T Kitchen (PAC-1.KITCHEN)","qty":1,"unit":"no.","notes":"key specs: kW, L/s, phases"}]
-Include only: AC units, fans, FCUs, AHUs, ERVs, VRF systems, kitchen hoods. Return ONLY the JSON array.` },
+async function runTakeoff() {
+  if (!getKey()) { showErr('to', 'No API key. Click API KEY in the header.'); return }
+  if (!S.toFiles.length) { showErr('to', 'Upload at least one drawing.'); return }
+  hideErr('to')
 
-  { name: 'Ductwork', prompt: `You are an expert mechanical estimator. Extract ductwork from this floor plan or roof plan.
-DO NOT measure lengths — the estimator measures in Bluebeam. List each distinct duct size found with qty=1 as a placeholder. Also count any fittings that can be directly counted (VCDs, fire dampers, canvas connections, access panels).
-Return ONLY a valid JSON array — no markdown, no other text:
-[{"description":"Rectangular Duct 750x700mm 75mm internal insulation","qty":1,"unit":"m","notes":"PLACEHOLDER - measure length in Bluebeam"},{"description":"Volume Control Damper","qty":2,"unit":"no.","notes":"shown on plan"}]
-Note insulation type from legend (none / 50mm / 75mm / 100mm internal). Return ONLY the JSON array.` },
+  const files = S.toFiles
+  document.getElementById('toBtn').disabled = true
+  document.getElementById('toStatus').classList.add('show')
+  document.getElementById('toResultsWrap').style.display = 'none'
 
-  { name: 'Grilles', prompt: `You are an expert mechanical estimator. Count every grille and diffuser on this floor plan.
-Count each grille INDIVIDUALLY from the plan. Note the colour if specified in the legend or on the drawing. Group identical items (same reference, size, colour).
-Return ONLY a valid JSON array — no markdown, no other text:
-[{"description":"S1 450x450 4-Way Blow Diffuser White","qty":4,"unit":"no.","notes":"cushion head box, louvred face"},{"description":"R1 600x600 Half Chevron Return Grille White","qty":2,"unit":"no.","notes":"removable core, cushion head box"}]
-Include all supply, return, exhaust, transfer and door relief grilles. Return ONLY the JSON array.` },
+  // Reset data
+  TO.data = { equipment:[], ductwork:[], grilles:[], flexDuct:[], spiralDuct:[], electrical:[] }
+  TO.equipmentList = []
+  TO.drawingTypes = {}
 
-  { name: 'Flex Duct', prompt: `You are an expert mechanical estimator. Count flexible duct connections on this floor plan.
-Rules: 1 connection point = 1 bag (6m) regardless of actual run length. A 3m run = 1 bag.
-Map airflow L/s shown next to each grille to diameter using this schedule:
-0-50 L/s = 150mm, 51-100 L/s = 200mm, 101-180 L/s = 250mm, 181-300 L/s = 300mm,
-301-400 L/s = 350mm, 401-500 L/s = 400mm, 501-600 L/s = 450mm, 601-700 L/s = 500mm.
-Return ONLY a valid JSON array — no markdown, no other text:
-[{"description":"150mm Flex Duct R1.0","qty":3,"unit":"bags (6m)","notes":"0-50 L/s connections"},{"description":"250mm Flex Duct R1.0","qty":5,"unit":"bags (6m)","notes":"101-180 L/s connections"}]
-Count connections to supply diffusers, return grilles, exhaust grilles. Return ONLY the JSON array.` },
-
-  { name: 'Spiral Duct', prompt: `You are an expert mechanical estimator. Identify spiral/circular duct diameters on this drawing.
-DO NOT measure lengths — the estimator measures in Bluebeam. List each distinct diameter found with qty=1 as a placeholder.
-Return ONLY a valid JSON array — no markdown, no other text:
-[{"description":"200mm Spiral Duct","qty":1,"unit":"m","notes":"PLACEHOLDER - measure length in Bluebeam"},{"description":"250mm Spiral Duct","qty":1,"unit":"m","notes":"PLACEHOLDER - measure length in Bluebeam"}]
-Include all diameters visible. Return ONLY the JSON array.` },
-
-  { name: 'Electrical', prompt: `You are an expert mechanical estimator. Extract electrical items for mechanical services from this drawing.
-Count: electrical connections to AC units (by phase), connections to fans (by phase), weatherproof isolating switches, motorised dampers, speed controllers, thermostat controllers.
-Return ONLY a valid JSON array — no markdown, no other text:
-[{"description":"3-phase Electrical Connection — PAC-1.KITCHEN (PKY620T)","qty":1,"unit":"no.","notes":"53.9A full load"},{"description":"1-phase Electrical Connection — FAN-1.TE","qty":1,"unit":"no.","notes":"130W, infinite speed controller required"},{"description":"Weatherproof Isolating Switch","qty":7,"unit":"no.","notes":"one per inline fan"}]
-Return ONLY the JSON array.` }
-]
-
-async function runSec(n) {
-  if (!getKey()) { showSecErr(n, 'No API key. Click API KEY in the header.'); return }
-  if (!secFiles[n].length) { showSecErr(n, 'Please upload at least one drawing.'); return }
-  hideSecErr(n)
-  const files = secFiles[n]
-  const cfg = SEC_CFG[n]
-  document.getElementById('sb' + n).disabled = true
-  document.getElementById('ss' + n).classList.add('show')
-  const cl = document.getElementById('scl' + n)
-  const cli = document.getElementById('sci' + n)
-  cl.style.display = 'block'
-  cli.innerHTML = files.map((f, i) =>
-    `<div class="check-chip" id="cc${n}_${i}"><span id="ci${n}_${i}">⏳</span><span>${f.name}</span></div>`
-  ).join('')
-  const combined = []
   try {
+
+    // ── PASS 1: Classify all drawings + extract equipment from schedule ──
+    setTxt('toStatusText', 'Pass 1 — Identifying drawing types and equipment schedule...')
+
+    // Build message with ALL drawings
+    const pass1Msgs = []
+    for (let i = 0; i < files.length; i++) {
+      setTxt('toStatusText', `Loading drawing ${i+1} of ${files.length}: ${files[i].name}...`)
+      const data = await toBase64(files[i])
+      const m = mediaType(files[i])
+      if (m === 'application/pdf') pass1Msgs.push({ type:'document', source:{type:'base64',media_type:m,data} })
+      else pass1Msgs.push({ type:'image', source:{type:'base64',media_type:m,data} })
+      pass1Msgs.push({ type:'text', text:`(File ${i+1}: ${files[i].name})` })
+    }
+
+    const fileList = files.map((f,i) => `${i+1}. ${f.name}`).join('\n')
+    pass1Msgs.push({ type:'text', text:`Drawing set files:\n${fileList}
+
+Task:
+1. Classify each drawing as one of: schedule, floor_plan, roof_plan, detail, cover
+2. Extract ALL equipment from any schedule sheets found (AC units, fans, FCUs, AHUs, hoods etc)
+
+Return ONLY valid JSON, no other text:
+{
+  "classifications": {
+    "filename.pdf": "schedule",
+    "filename2.pdf": "floor_plan"
+  },
+  "equipment": [
+    {"description": "Actron PKY620T Kitchen (PAC-1.KITCHEN)", "qty": 1, "unit": "no.", "notes": "3900 L/s, 60.6kW, 3-phase, F5 filter"}
+  ]
+}
+
+Classification guide:
+- schedule: has equipment/fan/grille schedule tables
+- floor_plan: shows room layout with duct, grilles, equipment positions on floor
+- roof_plan: shows roof layout with plant, ductwork on roof
+- detail: shows installation details, sections, NTS details
+- cover: cover sheet, drawing list, locality plan only` })
+
+    setTxt('toStatusText', 'Analysing drawing set...')
+    const pass1Result = await callClaude([{role:'user',content:pass1Msgs}],
+      'You are an expert mechanical estimator. Classify mechanical drawings and extract equipment schedules accurately.', 4000)
+
+    const pass1Clean = pass1Result.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim()
+    const pass1Data = JSON.parse(pass1Clean)
+
+    TO.drawingTypes = pass1Data.classifications || {}
+    TO.equipmentList = pass1Data.equipment || []
+    TO.data.equipment = [...TO.equipmentList]
+
+    // Build equipment description list for cross-reference
+    const equipDescriptions = TO.equipmentList.map(e => e.description).join(', ')
+
+    // ── Show checklist ───────────────────────────────────────
+    const clWrap = document.getElementById('toChecklist')
+    const clItems = document.getElementById('toChecklistItems')
+    clWrap.style.display = 'block'
+
+    const typeLabels = { schedule:'📋 Schedule', floor_plan:'🏢 Floor Plan', roof_plan:'🏠 Roof Plan', detail:'📐 Detail', cover:'📄 Cover' }
+    clItems.innerHTML = files.map((f,i) => {
+      const dtype = TO.drawingTypes[f.name] || 'unknown'
+      const dlabel = typeLabels[dtype] || dtype
+      return `<div class="check-chip" id="chip_${i}">
+        <span class="cc-icon" id="chipicon_${i}">⏳</span>
+        <span class="cc-lbl">${f.name}</span>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-left:4px">${dlabel}</span>
+      </div>`
+    }).join('')
+
+    // Mark schedule sheets as done, covers/details as skipped
+    files.forEach((f, i) => {
+      const dtype = TO.drawingTypes[f.name] || 'unknown'
+      if (dtype === 'schedule') setChipState(`chip_${i}`, 'done', f.name)
+      else if (dtype === 'cover' || dtype === 'detail') setChipState(`chip_${i}`, 'skip', f.name)
+    })
+
+    // Update equipment badge immediately
+    updateToBadge(0)
+    renderToTable(0)
+    document.getElementById('toResultsWrap').style.display = 'block'
+
+    // ── PASS 2: Extract quantities from each floor/roof plan ──
+    const planTypes = ['floor_plan', 'roof_plan']
+    const planFiles = files.filter(f => planTypes.includes(TO.drawingTypes[f.name] || ''))
+
+    if (planFiles.length === 0) {
+      setTxt('toStatusText', 'No floor/roof plans detected — only equipment extracted.')
+      document.getElementById('toBtn').disabled = false
+      document.getElementById('toStatus').classList.remove('show')
+      return
+    }
+
     for (let i = 0; i < files.length; i++) {
       const f = files[i]
-      document.getElementById('sst' + n).textContent = `Reading ${i+1} of ${files.length}: ${f.name}...`
-      const chip = document.getElementById(`cc${n}_${i}`)
-      const icon = document.getElementById(`ci${n}_${i}`)
-      if (chip) chip.className = 'check-chip processing'
-      if (icon) icon.textContent = '⟳'
-      const b64data = await toBase64(f)
-      const mt = mediaType(f)
+      const dtype = TO.drawingTypes[f.name] || 'unknown'
+      if (!planTypes.includes(dtype)) continue
+
+      setTxt('toStatusText', `Pass 2 — Reading ${f.name}...`)
+      setChipState(`chip_${i}`, 'processing', f.name)
+
+      const data = await toBase64(f)
+      const m = mediaType(f)
       const fc = []
-      if (mt === 'application/pdf') fc.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64data } })
-      else fc.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64data } })
-      fc.push({ type: 'text', text: `File: ${f.name}` })
+      if (m === 'application/pdf') fc.push({ type:'document', source:{type:'base64',media_type:m,data} })
+      else fc.push({ type:'image', source:{type:'base64',media_type:m,data} })
+
+      const planPrompt = `You are an expert mechanical estimator reading a mechanical ${dtype === 'roof_plan' ? 'ROOF' : 'FLOOR'} plan.
+
+Known equipment from schedule (DO NOT re-count these as new equipment):
+${equipDescriptions || 'None identified yet'}
+
+Extract quantities from this drawing. Return ONLY valid JSON:
+{
+  "ductwork": [
+    {"description": "Rectangular Duct 750x700mm 75mm internal insulation", "qty": 1, "unit": "m", "notes": "PLACEHOLDER - measure in Bluebeam"}
+  ],
+  "grilles": [
+    {"description": "S1 450x450 4-Way Blow Diffuser White", "qty": 4, "unit": "no.", "notes": "cushion head box"}
+  ],
+  "flexDuct": [
+    {"description": "150mm Flex Duct R1.0", "qty": 3, "unit": "bags (6m)", "notes": "0-50 L/s connections"}
+  ],
+  "spiralDuct": [
+    {"description": "200mm Spiral Duct", "qty": 1, "unit": "m", "notes": "PLACEHOLDER - measure in Bluebeam"}
+  ],
+  "electrical": [
+    {"description": "3-phase Electrical Connection — PAC-1.KITCHEN", "qty": 1, "unit": "no.", "notes": "53.9A"}
+  ]
+}
+
+Rules:
+- Ductwork: list each size found with qty=1 placeholder, note insulation type from legend
+- Grilles: count every grille individually, note colour, group identical items
+- Flex duct: 1 connection = 1 bag (6m). Map L/s → diameter: 0-50=150mm, 51-100=200mm, 101-180=250mm, 181-300=300mm, 301-400=350mm, 401-500=400mm, 501-600=450mm, 601-700=500mm
+- Spiral duct: list each diameter found with qty=1 placeholder
+- Electrical: count connections, isolators, controllers — do not duplicate equipment already in schedule
+- DO NOT include equipment items — they come from the schedule only
+Return ONLY the JSON object, no other text.`
+
+      fc.push({ type:'text', text:`File: ${f.name} (${dtype})` })
+
       let parsed = null
       try {
-        const result = await callClaude([{ role: 'user', content: fc }], cfg.prompt, 3000)
-        const clean = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+        const result = await callClaude([{role:'user',content:fc}], planPrompt, 3000)
+        const clean = result.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim()
         parsed = JSON.parse(clean)
-        if (!Array.isArray(parsed)) throw new Error('not array')
       } catch(e) { console.warn('Parse error', f.name, e) }
-      if (parsed && parsed.length) {
-        for (const item of parsed) {
-          if (!item.description) continue
-          const ex = combined.find(x => x.description === item.description)
-          if (ex) {
-            ex.qty += (item.qty || 0)
-            if (item.notes && !ex.notes.includes(item.notes)) ex.notes = ex.notes ? ex.notes + '; ' + item.notes : item.notes
-          } else {
-            combined.push({ ...item })
+
+      if (parsed) {
+        // Merge each category
+        const catMap = { ductwork:'ductwork', grilles:'grilles', flexDuct:'flexDuct', spiralDuct:'spiralDuct', electrical:'electrical' }
+        let hasData = false
+        for (const [key, cat] of Object.entries(catMap)) {
+          if (!parsed[key] || !parsed[key].length) continue
+          for (const item of parsed[key]) {
+            if (!item.description) continue
+            hasData = true
+            const ex = TO.data[cat].find(x => x.description === item.description)
+            if (ex) {
+              if (cat !== 'ductwork' && cat !== 'spiralDuct') ex.qty += (item.qty || 0)
+              if (item.notes && !ex.notes.includes(item.notes)) ex.notes = ex.notes ? ex.notes + '; ' + item.notes : (item.notes || '')
+            } else {
+              TO.data[cat].push({...item, notes: item.notes || ''})
+            }
           }
         }
-        if (chip) chip.className = 'check-chip done'
-        if (icon) { icon.textContent = '✓'; icon.style.color = 'var(--green-lt)' }
+        // Update all tables live
+        for (let c = 1; c < 6; c++) { renderToTable(c); updateToBadge(c) }
+        setChipState(`chip_${i}`, hasData ? 'done' : 'nodata', f.name)
       } else {
-        if (chip) chip.className = 'check-chip warn'
-        if (icon) icon.innerHTML = '⚠ <span style="font-size:10px">No data</span>'
+        setChipState(`chip_${i}`, 'nodata', f.name)
       }
     }
-    secData[n] = combined
-    renderSecTable(n)
-    document.getElementById('sq' + n).classList.add('show')
-    updateSecBadge(n)
-    document.getElementById('sb' + n).disabled = false
-    document.getElementById('ss' + n).classList.remove('show')
+
+    setTxt('toStatusText', 'Complete ✓')
+    setTimeout(() => document.getElementById('toStatus').classList.remove('show'), 2000)
+    document.getElementById('toBtn').disabled = false
+
   } catch(e) {
-    document.getElementById('sb' + n).disabled = false
-    document.getElementById('ss' + n).classList.remove('show')
-    showSecErr(n, e.message)
+    document.getElementById('toBtn').disabled = false
+    document.getElementById('toStatus').classList.remove('show')
+    showErr('to', e.message)
   }
 }
 
-function showSecErr(n, msg) { const el = document.getElementById('se' + n); el.textContent = msg; el.classList.add('show') }
-function hideSecErr(n) { document.getElementById('se' + n)?.classList.remove('show') }
-
-function renderSecTable(n) {
-  const items = secData[n].filter(x => x.qty > 0)
-  if (!items.length) { document.getElementById('sqt' + n).innerHTML = '<div style="padding:20px;color:var(--text-dim);font-size:13px">No items extracted.</div>'; return }
+function renderToTable(catIdx) {
+  const cat = TO_CATS[catIdx]
+  const items = (TO.data[cat] || []).filter(x => x.qty > 0)
+  const el = document.getElementById('toqt' + catIdx)
+  if (!el) return
+  if (!items.length) { el.innerHTML = '<div style="padding:20px;color:var(--text-dim);font-size:13px">No items extracted yet.</div>'; return }
   let h = '<table><thead><tr><th>Description</th><th>Unit</th><th style="text-align:right">Qty</th><th>Notes</th></tr></thead><tbody>'
   items.forEach((item, i) => {
+    const step = (cat === 'ductwork' || cat === 'spiralDuct') ? '0.5' : '1'
     h += `<tr>
       <td>${item.description}</td>
       <td style="color:var(--text-dim);font-family:var(--mono);font-size:11px;white-space:nowrap">${item.unit}</td>
-      <td style="text-align:right"><input class="qty-inp" type="number" value="${item.qty}" min="0" step="${item.unit === 'm' ? '0.5' : '1'}" onchange="secData[${n}][${i}].qty=parseFloat(this.value)||0;updateSecBadge(${n})"></td>
+      <td style="text-align:right"><input class="qty-inp" type="number" value="${item.qty}" min="0" step="${step}" onchange="TO.data['${cat}'][${i}].qty=parseFloat(this.value)||0;updateToBadge(${catIdx})"></td>
       <td style="color:var(--text-dim);font-size:12px;max-width:360px">${item.notes || ''}</td>
     </tr>`
   })
   h += '</tbody></table>'
-  document.getElementById('sqt' + n).innerHTML = h
+  el.innerHTML = h
 }
 
-function updateSecBadge(n) {
-  const cnt = secData[n].filter(x => x.qty > 0).length
-  const badge = document.getElementById('sbadge' + n)
-  const tab = document.getElementById('stab' + n)
+function updateToBadge(catIdx) {
+  const cat = TO_CATS[catIdx]
+  const cnt = (TO.data[cat] || []).filter(x => x.qty > 0).length
+  const badge = document.getElementById('tobadge' + catIdx)
+  const tab = document.getElementById('totab' + catIdx)
   if (badge) badge.textContent = cnt
   if (tab) tab.classList.toggle('has-data', cnt > 0)
 }
 
-function dlSec(n) {
-  const items = secData[n].filter(x => x.qty > 0)
+function dlToSec(catIdx) {
+  const cat = TO_CATS[catIdx]
+  const items = (TO.data[cat] || []).filter(x => x.qty > 0)
   if (!items.length) { alert('No data to download.'); return }
   const project = document.getElementById('toProject').value || 'Project'
   let csv = 'Description,Qty,Unit,Notes\n'
   items.forEach(x => csv += `"${x.description}",${x.qty},"${x.unit}","${x.notes || ''}"\n`)
   const a = document.createElement('a')
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
-  a.download = `${project.replace(/\s+/g, '_')}_${SEC_CFG[n].name.replace(/\s+/g, '_')}.csv`
+  a.download = `${project.replace(/\s+/g,'_')}_${TO_LABELS[catIdx].replace(/\s+/g,'_')}.csv`
   a.click()
 }
 
