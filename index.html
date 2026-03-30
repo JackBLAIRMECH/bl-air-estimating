@@ -1344,9 +1344,25 @@ Return ONLY valid JSON, no other text.`
       [{ role: 'user', content: `Project: ${project}${client ? `\nClient: ${client}` : ''}\n${notes ? `Notes: ${notes}\n` : ''}\n\nExtracted scope from drawings:\n${allText}\n\nGenerate the complete scope confirmation report and pricing emails as JSON.` }],
       systemPrompt, 6000)
 
-    // Parse JSON
-    const clean = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-    const parsed = JSON.parse(clean)
+    // Parse JSON robustly
+    let parsed
+    try {
+      const clean = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+      parsed = JSON.parse(clean)
+    } catch(e) {
+      // If JSON is truncated, try to extract sections manually
+      console.warn('JSON parse failed, attempting manual extraction:', e)
+      const sectionsMatch = result.match(/"sections"\s*:\s*(\[.*?\])/s)
+      const emailsMatch = result.match(/"pricingEmails"\s*:\s*(\{.*?\})/s)
+      parsed = {
+        sections: sectionsMatch ? JSON.parse(sectionsMatch[1]) : [],
+        pricingEmails: emailsMatch ? JSON.parse(emailsMatch[1]) : {}
+      }
+      if (!parsed.sections.length) {
+        // Last resort: ask Claude to re-output just the sections in a simpler format
+        throw new Error('Could not parse response. Please try again — reduce the number of drawings if the issue persists.')
+      }
+    }
 
     state.reportSections = parsed.sections || []
     state.emailDrafts = parsed.pricingEmails || {}
