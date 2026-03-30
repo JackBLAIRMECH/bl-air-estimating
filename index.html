@@ -643,14 +643,21 @@ async function runTakeoff() {
           role: 'user',
           content: [
             { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } },
-            { type: 'text', text: `Extract ALL quantities from this mechanical drawing. Count every item:
-- AC units: cassettes, highwall splits, ducted units, VRF indoor/outdoor, branch boxes, ERV
-- Rectangular ductwork: each run with W×H dimensions, length in metres, insulation type (none/R1.0/R1.5/PI board)
-- Grilles/diffusers: each type with size (supply diffusers, return/exhaust egg crate, OA grilles, bulkhead grilles, cushion head boxes)
-- Flexible duct: count by diameter (90/125/150/200/250/300/400mm)
-- Fans: outside air fans, exhaust fans, toilet exhaust fans, roof cowls
-- Fire dampers, VCDs, access panels, canvas connections
-Be specific with actual quantities.` }
+            { type: 'text', text: `You are a mechanical estimator doing a quantity takeoff. Extract ALL of the following from this drawing - give actual numbers even if approximate.
+
+AC EQUIPMENT: Count every indoor unit (cassettes, highwall splits, mid-static ducted, high-static ducted, wall mounted, VRF indoor/outdoor, branch boxes).
+
+FANS: Count every fan tag - OAF (outside air fans), EF (exhaust fans), TEF (toilet exhaust fans), roof cowls. Note duct-mounted vs roof-mounted.
+
+DUCTWORK: For each duct run visible on the plan, note the duct size (W x H mm) and estimate length in metres from scale. Note insulation type (none / PI board / R1.0 / R1.5).
+
+GRILLES AND DIFFUSERS: Count EVERY grille and diffuser symbol on the plan individually. Common types: supply diffusers (600x600 or 450x450 four-way face), return egg crate grilles (600x600 or 1200x600), exhaust egg crate (200x200), OA grilles (600x600), bulkhead grilles (200x58 double deflection), cushion head boxes. Count each symbol on the plan.
+
+FLEXIBLE DUCT: Count the number of flexible duct drops to terminals. Assume 1.5m per connection. Note diameter.
+
+DAMPERS AND ACCESSORIES: Count fire dampers, VCDs, NR return dampers, CPBD OA dampers, canvas connections, access panels.
+
+It is better to estimate than to leave items blank. List all quantities found.` }
           ]
         }], 'You are a mechanical quantity surveyor. Extract all quantities from drawings.', 1500)
 
@@ -753,30 +760,53 @@ function renderQtyTable(data, projName) {
   const tbl = document.getElementById('qtyTable')
   let html = `<thead><tr>
     <th>Item</th>
-    <th style="text-align:right">Qty</th>
-    <th>Unit</th>
+    <th style="text-align:right;width:90px">Qty</th>
+    <th style="width:70px">Unit</th>
   </tr></thead><tbody>`
 
+  let rowIdx = 0
   for (const [cat, items] of Object.entries(data)) {
     if (!Array.isArray(items)) continue
-    const nonZero = items.filter(i => i.qty > 0)
-    if (!nonZero.length) continue
     html += `<tr><td colspan="3" class="qty-cat">${cat}</td></tr>`
-    nonZero.forEach(i => {
-      html += `<tr><td>${i.item}</td><td class="qty-num">${i.qty.toLocaleString()}</td><td style="color:var(--muted)">${i.unit}</td></tr>`
+    items.forEach(i => {
+      const id = `qty_${rowIdx++}`
+      const zeroStyle = i.qty === 0 ? 'color:var(--muted)' : 'color:var(--yellow)'
+      html += `<tr>
+        <td style="font-size:12px">${i.item}</td>
+        <td class="qty-num">
+          <input id="${id}" type="number" min="0" value="${i.qty}"
+            style="width:80px;text-align:right;background:transparent;border:1px solid transparent;
+                   color:${i.qty===0?'var(--muted)':'var(--yellow)'};font-family:monospace;font-size:12px;
+                   padding:2px 6px;border-radius:2px;outline:none;${i.qty===0?'opacity:0.5':''}"
+            onfocus="this.style.borderColor='var(--orange)'"
+            onblur="this.style.borderColor='transparent';updateQtyData('${cat}','${i.item}',this.value)"
+            oninput="this.style.color=this.value>0?'var(--yellow)':'var(--muted)';this.style.opacity=this.value>0?'1':'0.5'">
+        </td>
+        <td style="color:var(--muted);font-size:12px">${i.unit}</td>
+      </tr>`
     })
   }
   html += '</tbody>'
   tbl.innerHTML = html
 }
 
+function updateQtyData(cat, item, val) {
+  if (qtyData && qtyData[cat]) {
+    const entry = qtyData[cat].find(i => i.item === item)
+    if (entry) entry.qty = parseInt(val) || 0
+  }
+}
+
 function downloadCSV() {
   if (!qtyData) return
   let csv = 'Category,Item,Quantity,Unit\n'
+  let rowIdx = 0
   for (const [cat, items] of Object.entries(qtyData)) {
     if (!Array.isArray(items)) continue
-    items.filter(i => i.qty > 0).forEach(i => {
-      csv += `"${cat}","${i.item}",${i.qty},"${i.unit}"\n`
+    items.forEach(i => {
+      const input = document.getElementById('qty_' + rowIdx++)
+      const qty = input ? (parseInt(input.value) || 0) : i.qty
+      if (qty > 0) csv += '"' + cat + '","' + i.item + '",' + qty + ',"' + i.unit + '"\n'
     })
   }
   const a = document.createElement('a')
