@@ -23,6 +23,8 @@ export default async function handler(req) {
 
   const body = await req.text()
 
+  // Stream the response from Anthropic directly back to the browser
+  // This keeps the connection alive and bypasses Vercel's 25s timeout
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -33,9 +35,8 @@ export default async function handler(req) {
     body,
   })
 
-  const data = await response.text()
-
-  return new Response(data, {
+  // Pipe Anthropic's response directly back — no buffering, no timeout
+  return new Response(response.body, {
     status: response.status,
     headers: {
       ...corsHeaders,
