@@ -219,6 +219,11 @@ textarea.field-inp { resize: vertical; min-height: 80px; line-height: 1.6; }
 .check-chip.processing { border-color: var(--orange); color: var(--text); }
 .check-chip.done { border-color: var(--green); color: var(--green-lt); }
 .check-chip.warn { border-color: #888; color: #aaa; }
+.to-tab-panel { display: none; }
+.to-tab-panel.active { display: block; }
+.cc-icon { font-size: 13px; }
+.qty-inp { background: var(--bg); border: 1px solid var(--border); color: var(--orange); font-family: var(--mono); font-size: 13px; padding: 3px 8px; width: 80px; text-align: right; outline: none; }
+.qty-inp:focus { border-color: var(--orange); }
 table { width: 100%; border-collapse: collapse; }
 th { font-family: var(--cond); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); padding: 8px 14px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
 td { padding: 7px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
@@ -793,12 +798,12 @@ async function runTakeoff() {
   try {
 
     // ── PASS 1: Classify all drawings + extract equipment from schedule ──
-    setTxt('toStatusText', 'Pass 1 — Identifying drawing types and equipment schedule...')
+    setStatus('to', 'Pass 1 — Identifying drawing types and equipment schedule...')
 
     // Build message with ALL drawings
     const pass1Msgs = []
     for (let i = 0; i < files.length; i++) {
-      setTxt('toStatusText', `Loading drawing ${i+1} of ${files.length}: ${files[i].name}...`)
+      setStatus('to', `Loading drawing ${i+1} of ${files.length}: ${files[i].name}...`)
       const data = await toBase64(files[i])
       const m = mediaType(files[i])
       if (m === 'application/pdf') pass1Msgs.push({ type:'document', source:{type:'base64',media_type:m,data} })
@@ -831,7 +836,7 @@ Classification guide:
 - detail: shows installation details, sections, NTS details
 - cover: cover sheet, drawing list, locality plan only` })
 
-    setTxt('toStatusText', 'Analysing drawing set...')
+    setStatus('to', 'Analysing drawing set...')
     const pass1Result = await callClaude([{role:'user',content:pass1Msgs}],
       'You are an expert mechanical estimator. Classify mechanical drawings and extract equipment schedules accurately.', 4000)
 
@@ -878,7 +883,7 @@ Classification guide:
     const planFiles = files.filter(f => planTypes.includes(TO.drawingTypes[f.name] || ''))
 
     if (planFiles.length === 0) {
-      setTxt('toStatusText', 'No floor/roof plans detected — only equipment extracted.')
+      setStatus('to', 'No floor/roof plans detected — only equipment extracted.')
       document.getElementById('toBtn').disabled = false
       document.getElementById('toStatus').classList.remove('show')
       return
@@ -889,7 +894,7 @@ Classification guide:
       const dtype = TO.drawingTypes[f.name] || 'unknown'
       if (!planTypes.includes(dtype)) continue
 
-      setTxt('toStatusText', `Pass 2 — Reading ${f.name}...`)
+      setStatus('to', `Pass 2 — Reading ${f.name}...`)
       setChipState(`chip_${i}`, 'processing', f.name)
 
       const data = await toBase64(f)
@@ -966,7 +971,7 @@ Return ONLY the JSON object, no other text.`
       }
     }
 
-    setTxt('toStatusText', 'Complete ✓')
+    setStatus('to', 'Complete ✓')
     setTimeout(() => document.getElementById('toStatus').classList.remove('show'), 2000)
     document.getElementById('toBtn').disabled = false
 
