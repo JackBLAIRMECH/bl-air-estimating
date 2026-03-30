@@ -885,7 +885,7 @@ async function runSec(n) {
       if (chip) chip.className = 'check-chip processing'
       if (icon) icon.textContent = '⟳'
       const b64data = await toBase64(f)
-      const mt = getMediaType(f)
+      const mt = mediaType(f)
       const fc = []
       if (mt === 'application/pdf') fc.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64data } })
       else fc.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64data } })
