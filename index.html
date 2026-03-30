@@ -1317,32 +1317,21 @@ STANDARD EXCLUSIONS to always include:
 - Fire rating of penetrations (by others)
 - Hydraulic works
 
-Format as JSON with this structure:
+Return ONLY valid JSON in this exact structure with NO trailing commas and NO extra text:
 {
   "sections": [
     {
       "title": "SECTION NAME",
-      "items": ["item 1", "item 2", ...]
+      "items": ["item 1", "item 2"]
     }
-  ],
-  "pricingEmails": {
-    "AC Equipment": "full email text",
-    "Rectangular Ductwork": "full email text",
-    "Spiral Duct": "full email text",
-    "Fans & Grilles": "full email text",
-    "Duct Install Subcontractor": "full email text",
-    "Pipework Subcontractor": "full email text",
-    "Mechanical Electrical Subcontractor": "full email text",
-    "Rigging Subcontractor": "full email text"
-  }
+  ]
 }
 
-For pricing emails, write professional pricing request emails from BL Air Mechanical Services Pty Ltd for the project "${project}"${client ? ` for client ${client}` : ''}.
-Return ONLY valid JSON, no other text.`
+Keep each item concise - one line per item. Return ONLY the JSON object, nothing else.`
 
     const result = await callClaude(
       [{ role: 'user', content: `Project: ${project}${client ? `\nClient: ${client}` : ''}\n${notes ? `Notes: ${notes}\n` : ''}\n\nExtracted scope from drawings:\n${allText}\n\nGenerate the complete scope confirmation report and pricing emails as JSON.` }],
-      systemPrompt, 6000)
+      systemPrompt, 8000)
 
     // Parse JSON robustly
     let parsed
