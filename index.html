@@ -7,213 +7,144 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0f0f0d;
-  --surface: #1a1a18;
-  --surface2: #242420;
-  --surface3: #2e2e2a;
-  --border: #3a3a34;
-  --orange: #c4531a;
-  --orange-lt: #e0662a;
-  --text: #e8e4dc;
-  --text-mid: #a09890;
-  --text-dim: #6a6460;
-  --green: #3a9a64;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'Barlow', sans-serif;
-  --cond: 'Barlow Condensed', sans-serif;
+  --bg:#0f0f0d;--surface:#1a1a18;--surface2:#242420;--surface3:#2e2e2a;
+  --border:#3a3a34;--orange:#c4531a;--orange-lt:#e0662a;
+  --text:#e8e4dc;--text-mid:#a09890;--text-dim:#6a6460;
+  --green:#3a9a64;--green-lt:#4ab87a;
+  --mono:'JetBrains Mono',monospace;--sans:'Barlow',sans-serif;--cond:'Barlow Condensed',sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; min-height: 100vh; }
-
-/* HEADER */
-header {
-  background: var(--surface);
-  border-bottom: 2px solid var(--orange);
-  padding: 0 32px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.logo { display: flex; align-items: center; gap: 14px; }
-.logo-mark {
-  width: 36px; height: 36px;
-  background: var(--orange);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--cond); font-weight: 700; font-size: 14px; color: white;
-}
-.logo-text { font-family: var(--cond); font-weight: 700; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; }
-.logo-sub { font-family: var(--cond); font-size: 11px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-top: 2px; }
-.hdr-right { display: flex; align-items: center; gap: 16px; }
-.api-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
-.api-dot.on { background: var(--green); }
-.api-label { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
-.btn-outline {
-  background: var(--surface2); border: 1px solid var(--border); color: var(--text-mid);
-  padding: 6px 14px; font-family: var(--cond); font-size: 12px; letter-spacing: 1px;
-  text-transform: uppercase; cursor: pointer; transition: all 0.15s;
-}
-.btn-outline:hover { border-color: var(--orange); color: var(--orange); }
-
-/* MODALS */
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; }
-.overlay.hidden { display: none; }
-.modal { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--orange); width: 480px; padding: 32px; }
-.modal-title { font-family: var(--cond); font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-.modal-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; line-height: 1.6; }
-.field-lbl { font-family: var(--cond); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mid); margin-bottom: 8px; display: block; }
-.field-inp {
-  width: 100%; background: var(--bg); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 12px; padding: 10px 14px; outline: none;
-}
-.field-inp:focus { border-color: var(--orange); }
-.btn-primary {
-  background: var(--orange); border: none; color: white;
-  font-family: var(--cond); font-size: 14px; font-weight: 600; letter-spacing: 2px;
-  text-transform: uppercase; padding: 12px 28px; cursor: pointer; margin-top: 20px; width: 100%;
-}
-.btn-primary:hover { background: var(--orange-lt); }
-.btn-primary:disabled { background: var(--border); cursor: not-allowed; }
-
-/* MAIN */
-main { max-width: 1100px; margin: 0 auto; padding: 32px; }
-
-/* HOME */
-.home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.tool-card {
-  background: var(--surface); border: 1px solid var(--border);
-  padding: 32px; cursor: pointer; transition: border-color 0.2s;
-}
-.tool-card:hover { border-color: var(--orange); }
-.card-num { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 16px; }
-.card-title { font-family: var(--cond); font-size: 28px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; line-height: 1.1; margin-bottom: 12px; }
-.card-desc { font-size: 13px; color: var(--text-mid); line-height: 1.7; margin-bottom: 20px; }
-.card-features { list-style: none; margin-bottom: 24px; }
-.card-features li { font-size: 12px; color: var(--text-dim); padding: 3px 0 3px 16px; position: relative; font-family: var(--mono); }
-.card-features li::before { content: '→'; position: absolute; left: 0; color: var(--orange); }
-.card-cta { font-family: var(--cond); font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); border: 1px solid var(--orange); padding: 8px 18px; display: inline-block; }
-
-/* VIEWS */
-.view { display: none; }
-.view.active { display: block; }
-.view-hdr { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-.view-title { font-family: var(--cond); font-size: 24px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
-.back-btn { background: none; border: 1px solid var(--border); color: var(--text-mid); font-family: var(--cond); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; cursor: pointer; }
-.back-btn:hover { border-color: var(--orange); color: var(--orange); }
-
-/* FORMS */
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-textarea.field-inp { resize: vertical; min-height: 80px; line-height: 1.6; }
-
-/* UPLOAD */
-.upload-zone {
-  border: 2px dashed var(--border); padding: 48px 32px; text-align: center;
-  cursor: pointer; transition: all 0.2s; position: relative; background: var(--surface); margin-bottom: 16px;
-}
-.upload-zone:hover, .upload-zone.drag-over { border-color: var(--orange); }
-.upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.upload-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.4; }
-.upload-text { font-family: var(--cond); font-size: 16px; letter-spacing: 1px; color: var(--text-mid); margin-bottom: 4px; }
-.upload-sub { font-size: 11px; color: var(--text-dim); font-family: var(--mono); }
-.file-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-.file-chip { background: var(--surface2); border: 1px solid var(--border); padding: 4px 10px; font-family: var(--mono); font-size: 11px; color: var(--text-mid); display: flex; align-items: center; gap: 6px; }
-.chip-x { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px; line-height: 1; }
-.chip-x:hover { color: #c44; }
-
-/* STATUS */
-.status-bar {
-  background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--orange);
-  padding: 12px 16px; font-family: var(--mono); font-size: 12px; color: var(--text-mid);
-  display: none; align-items: center; gap: 12px; margin: 16px 0;
-}
-.status-bar.show { display: flex; }
-.spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--orange); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.error-bar { background: rgba(180,40,40,0.15); border: 1px solid rgba(180,40,40,0.4); color: #e88; padding: 10px 14px; font-size: 12px; font-family: var(--mono); display: none; margin: 8px 0; }
-.error-bar.show { display: block; }
-
-/* CHECKLIST */
-.checklist-wrap { margin: 16px 0; }
-.checklist-label { font-family: var(--cond); font-size: 11px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 10px; }
-.checklist-items { display: flex; flex-wrap: wrap; gap: 8px; }
-.check-chip {
-  background: var(--surface2); border: 1px solid var(--border); padding: 5px 12px;
-  font-family: var(--mono); font-size: 11px; color: var(--text-dim);
-  display: flex; align-items: center; gap: 8px; transition: all 0.2s;
-}
-.check-chip.processing { border-color: var(--orange); color: var(--text); }
-.check-chip.done { border-color: var(--green); color: var(--green); }
-.check-chip.warn { border-color: #c44; color: #c44; }
-
-/* REPORT */
-.panel { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--orange); display: none; margin-top: 8px; }
-.panel.show { display: block; }
-.panel-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--surface2); }
-.panel-title { font-family: var(--cond); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-mid); }
-.toolbar-btns { display: flex; gap: 8px; }
-.btn-sm { background: var(--surface3); border: 1px solid var(--border); color: var(--text-mid); font-family: var(--cond); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 5px 12px; cursor: pointer; }
-.btn-sm:hover { border-color: var(--orange); color: var(--orange); }
-.btn-sm.hi { background: var(--orange); border-color: var(--orange); color: white; }
-.panel-body { padding: 24px 28px; }
-
-/* SECTIONS */
-.report-section { border: 1px solid var(--border); margin-bottom: 20px; }
-.section-hdr { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--surface2); border-bottom: 1px solid var(--border); }
-.section-title { font-family: var(--cond); font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); }
-.section-body { padding: 12px 14px; }
-.section-items { list-style: none; }
-.section-item { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
-.section-item:last-child { border-bottom: none; }
-.item-bullet { color: var(--orange); font-family: var(--mono); font-size: 11px; margin-top: 2px; flex-shrink: 0; }
-.item-text { flex: 1; outline: none; background: none; color: var(--text); font-size: 13px; font-family: var(--sans); border: none; border-bottom: 1px dashed transparent; padding: 1px 4px; width: 100%; }
-.item-text:focus { border-bottom-color: var(--orange); }
-.item-del { background: none; border: none; color: var(--text-dim); cursor: pointer; opacity: 0; font-size: 14px; padding: 0 4px; }
-.section-item:hover .item-del { opacity: 1; }
-.item-del:hover { color: #c44; }
-.add-row { display: flex; gap: 8px; margin-top: 8px; }
-.add-inp { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--sans); font-size: 12px; padding: 6px 10px; outline: none; }
-.add-inp:focus { border-color: var(--orange); }
-.add-section-row { display: flex; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
-
-/* TABS */
-.tabs { display: flex; border-bottom: 1px solid var(--border); }
-.tab { font-family: var(--cond); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 12px 24px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-dim); cursor: pointer; }
-.tab:hover { color: var(--text-mid); }
-.tab.active { color: var(--orange); border-bottom-color: var(--orange); }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-/* EMAIL */
-.email-tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--border); }
-.email-tab { font-family: var(--cond); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; padding: 8px 16px; border: none; border-bottom: 2px solid transparent; background: none; color: var(--text-dim); cursor: pointer; white-space: nowrap; }
-.email-tab:hover { color: var(--text-mid); }
-.email-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
-.email-panel { display: none; padding: 16px; }
-.email-panel.active { display: block; }
-.email-body { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: var(--sans); font-size: 13px; line-height: 1.7; padding: 16px; outline: none; resize: vertical; min-height: 200px; white-space: pre-wrap; }
-.email-body:focus { border-color: var(--orange); }
-
-/* QTY TABLE */
-.qty-panel { background: var(--surface); border: 1px solid var(--green); border-top: 3px solid var(--green); display: none; margin-top: 8px; }
-.qty-panel.show { display: block; }
-.qty-panel-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--surface2); }
-.qty-panel-title { font-family: var(--cond); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); }
-table { width: 100%; border-collapse: collapse; }
-th { font-family: var(--cond); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); padding: 8px 14px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
-td { padding: 7px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
-tr:last-child td { border-bottom: none; }
-.cat-row td { background: var(--surface2); font-family: var(--cond); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--green); padding: 6px 14px; border-bottom: 1px solid var(--border); }
-td.qty-cell input { background: var(--bg); border: 1px solid var(--border); color: var(--orange); font-family: var(--mono); font-size: 13px; padding: 3px 8px; width: 80px; text-align: right; outline: none; }
-td.qty-cell input:focus { border-color: var(--orange); }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh}
+header{background:var(--surface);border-bottom:2px solid var(--orange);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-mark{width:36px;height:36px;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:var(--cond);font-weight:700;font-size:14px;color:white}
+.logo-text{font-family:var(--cond);font-weight:700;font-size:18px;letter-spacing:2px;text-transform:uppercase}
+.logo-sub{font-family:var(--cond);font-size:11px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;margin-top:2px}
+.hdr-r{display:flex;align-items:center;gap:16px}
+.api-dot{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.api-dot.on{background:var(--green)}
+.api-lbl{font-family:var(--mono);font-size:11px;color:var(--text-dim)}
+.btn-outline{background:var(--surface2);border:1px solid var(--border);color:var(--text-mid);padding:6px 14px;font-family:var(--cond);font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center}
+.overlay.hidden{display:none}
+.modal{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--orange);width:480px;padding:32px}
+.modal-title{font-family:var(--cond);font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.modal-sub{font-size:13px;color:var(--text-dim);margin-bottom:24px;line-height:1.6}
+.lbl{font-family:var(--cond);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid);margin-bottom:8px;display:block}
+.inp{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:10px 14px;outline:none}
+.inp:focus{border-color:var(--orange)}
+.btn-p{background:var(--orange);border:none;color:white;font-family:var(--cond);font-size:14px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:12px 28px;cursor:pointer;margin-top:20px;width:100%}
+.btn-p:hover{background:var(--orange-lt)}
+.btn-p:disabled{background:var(--border);cursor:not-allowed}
+main{max-width:1100px;margin:0 auto;padding:32px}
+.view{display:none}
+.view.active{display:block}
+.view-hdr{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.view-title{font-family:var(--cond);font-size:24px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+.back-btn{background:none;border:1px solid var(--border);color:var(--text-mid);font-family:var(--cond);font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;cursor:pointer}
+.back-btn:hover{border-color:var(--orange);color:var(--orange)}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.card{background:var(--surface);border:1px solid var(--border);padding:32px;cursor:pointer;transition:border-color .2s}
+.card:hover{border-color:var(--orange)}
+.card-num{font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:2px;margin-bottom:16px}
+.card-title{font-family:var(--cond);font-size:28px;font-weight:700;letter-spacing:2px;text-transform:uppercase;line-height:1.1;margin-bottom:12px}
+.card-desc{font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:20px}
+.card-feat{list-style:none;margin-bottom:24px}
+.card-feat li{font-size:12px;color:var(--text-dim);padding:3px 0 3px 16px;position:relative;font-family:var(--mono)}
+.card-feat li::before{content:'→';position:absolute;left:0;color:var(--orange)}
+.card-cta{font-family:var(--cond);font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--orange);border:1px solid var(--orange);padding:8px 18px;display:inline-block}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.fg{display:flex;flex-direction:column;gap:6px}
+textarea.inp{resize:vertical;min-height:80px;line-height:1.6}
+.zone{border:2px dashed var(--border);padding:32px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--surface);margin-bottom:12px}
+.zone:hover,.zone.drag-over{border-color:var(--orange)}
+.zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.zone-icon{font-size:24px;margin-bottom:8px;opacity:.4}
+.zone-text{font-family:var(--cond);font-size:15px;letter-spacing:1px;color:var(--text-mid);margin-bottom:4px}
+.zone-sub{font-size:11px;color:var(--text-dim);font-family:var(--mono)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;min-height:8px}
+.chip{background:var(--surface2);border:1px solid var(--border);padding:4px 10px;font-family:var(--mono);font-size:11px;color:var(--text-mid);display:flex;align-items:center;gap:6px}
+.chip-x{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;line-height:1;padding:0}
+.chip-x:hover{color:#c44}
+.cl-wrap{margin:12px 0}
+.cl-lbl{font-family:var(--cond);font-size:11px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px}
+.cl-items{display:flex;flex-wrap:wrap;gap:8px}
+.cc{background:var(--surface2);border:1px solid var(--border);padding:5px 12px;font-family:var(--mono);font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:8px;transition:all .2s}
+.cc.processing{border-color:var(--orange);color:var(--text)}
+.cc.done{border-color:var(--green);color:var(--green-lt)}
+.cc.warn{border-color:#c44;color:#e88}
+.sbar{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--orange);padding:10px 14px;font-family:var(--mono);font-size:12px;color:var(--text-mid);display:none;align-items:center;gap:12px;margin:12px 0}
+.sbar.show{display:flex}
+.spin{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ebar{background:rgba(180,40,40,.15);border:1px solid rgba(180,40,40,.4);color:#e88;padding:10px 14px;font-size:12px;font-family:var(--mono);display:none;margin:8px 0}
+.ebar.show{display:block}
+.panel{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--orange);display:none;margin-top:12px}
+.panel.show{display:block}
+.ptb{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.ptitle{font-family:var(--cond);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid)}
+.tbtns{display:flex;gap:8px}
+.bsm{background:var(--surface3);border:1px solid var(--border);color:var(--text-mid);font-family:var(--cond);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;cursor:pointer}
+.bsm:hover{border-color:var(--orange);color:var(--orange)}
+.bsm.hi{background:var(--orange);border-color:var(--orange);color:white}
+.bsm.hi:hover{background:var(--orange-lt)}
+.pbody{padding:20px 24px}
+.rsec{border:1px solid var(--border);margin-bottom:16px}
+.shdr{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.stitle{font-family:var(--cond);font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--orange)}
+.sbody{padding:10px 14px}
+.sitems{list-style:none}
+.sitem{display:flex;align-items:flex-start;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.sitem:last-child{border-bottom:none}
+.ibullet{color:var(--orange);font-family:var(--mono);font-size:11px;margin-top:2px;flex-shrink:0}
+.itext{flex:1;outline:none;background:none;color:var(--text);font-size:13px;font-family:var(--sans);border:none;border-bottom:1px dashed transparent;padding:1px 4px;width:100%}
+.itext:focus{border-bottom-color:var(--orange)}
+.idel{background:none;border:none;color:transparent;cursor:pointer;font-size:14px;padding:0 4px}
+.sitem:hover .idel{color:var(--text-dim)}
+.idel:hover{color:#c44!important}
+.add-row{display:flex;gap:8px;margin-top:8px}
+.add-inp{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:12px;padding:6px 10px;outline:none}
+.add-inp:focus{border-color:var(--orange)}
+.add-sec-row{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.tabs{display:flex;border-bottom:1px solid var(--border)}
+.tab{font-family:var(--cond);font-size:12px;letter-spacing:2px;text-transform:uppercase;padding:10px 20px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-dim);cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--text-mid)}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.tpanel{display:none}
+.tpanel.active{display:block}
+.etabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.etab{font-family:var(--cond);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:8px 14px;border:none;border-bottom:2px solid transparent;background:none;color:var(--text-dim);cursor:pointer;white-space:nowrap}
+.etab:hover{color:var(--text-mid)}
+.etab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.epanel{display:none;padding:16px}
+.epanel.active{display:block}
+.ebody{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.7;padding:16px;outline:none;resize:vertical;min-height:200px}
+.ebody:focus{border-color:var(--orange)}
+.to-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:24px;overflow-x:auto}
+.to-tab{font-family:var(--cond);font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:12px 18px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-dim);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px;margin-bottom:-2px;flex-shrink:0}
+.to-tab:hover{color:var(--text-mid)}
+.to-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.badge{background:var(--surface2);border:1px solid var(--border);font-family:var(--mono);font-size:10px;padding:1px 6px;color:var(--text-dim)}
+.to-tab.has-data .badge{background:rgba(58,154,100,.15);border-color:var(--green);color:var(--green-lt)}
+.sp{display:none}
+.sp.active{display:block}
+.hint{background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--orange);padding:10px 14px;font-size:12px;color:var(--text-mid);margin-bottom:16px;line-height:1.6}
+.hint strong{color:var(--text);font-family:var(--cond);letter-spacing:1px}
+.qp{background:var(--surface);border:1px solid var(--green);border-top:3px solid var(--green);display:none;margin-top:12px}
+.qp.show{display:block}
+.qptb{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.qptitle{font-family:var(--cond);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--green-lt)}
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--cond);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);padding:8px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2)}
+td{padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;vertical-align:top}
+tr:last-child td{border-bottom:none}
+.qi{background:var(--bg);border:1px solid var(--border);color:var(--orange);font-family:var(--mono);font-size:13px;padding:3px 8px;width:80px;text-align:right;outline:none}
+.qi:focus{border-color:var(--orange)}
+.nc{color:var(--text-dim);font-size:12px;max-width:380px}
 </style>
 </head>
 <body>
-
-<!-- HEADER -->
 <header>
   <div class="logo">
     <div class="logo-mark">BLA</div>
@@ -222,326 +153,235 @@ td.qty-cell input:focus { border-color: var(--orange); }
       <div class="logo-sub">Estimating Suite</div>
     </div>
   </div>
-  <div class="hdr-right">
+  <div class="hdr-r">
     <div class="api-dot" id="apiDot"></div>
-    <span class="api-label" id="apiLabel">NO API KEY</span>
-    <button class="btn-outline" onclick="openApiModal()">API KEY</button>
+    <span class="api-lbl" id="apiLbl">NO API KEY</span>
+    <button class="btn-outline" onclick="openKey()">API KEY</button>
   </div>
 </header>
 
-<!-- API KEY MODAL -->
-<div class="overlay hidden" id="apiModal">
+<div class="overlay hidden" id="keyModal">
   <div class="modal">
     <div class="modal-title">API Key Setup</div>
-    <div class="modal-sub">Your key is stored in this browser only. It is never sent anywhere except directly to Anthropic.</div>
-    <label class="field-lbl">Anthropic API Key</label>
-    <input type="password" class="field-inp" id="apiKeyInput" placeholder="sk-ant-api03-...">
-    <button class="btn-primary" onclick="saveKey()">Save & Continue</button>
+    <div class="modal-sub">Stored in this browser only. Sent directly to Anthropic — never via any third party.</div>
+    <label class="lbl">Anthropic API Key</label>
+    <input type="password" class="inp" id="keyInp" placeholder="sk-ant-api03-...">
+    <button class="btn-p" onclick="saveKey()">Save & Continue</button>
   </div>
 </div>
 
-<!-- MAIN -->
 <main>
 
-  <!-- HOME -->
-  <div id="viewHome" class="view active">
-    <div class="home-grid">
-      <div class="tool-card" onclick="goTo('scope')">
-        <div class="card-num">TOOL 01 / 02</div>
-        <div class="card-title">Scope<br>Confirmation</div>
-        <div class="card-desc">Upload drawings and Claude will read them, identify all mechanical scope, and generate a full report ready to send.</div>
-        <ul class="card-features">
-          <li>Reads PDF and image drawings</li>
-          <li>Generates scope by trade section</li>
-          <li>Fully editable before sending</li>
-          <li>Produces pricing emails for subs & suppliers</li>
-        </ul>
-        <div class="card-cta">Open Tool →</div>
+<!-- HOME -->
+<div id="vHome" class="view active">
+  <div class="home-grid">
+    <div class="card" onclick="goTo('scope')">
+      <div class="card-num">TOOL 01 / 02</div>
+      <div class="card-title">Scope<br>Confirmation</div>
+      <div class="card-desc">Upload drawings and Claude reads them, identifies all mechanical scope, and generates a report ready to send.</div>
+      <ul class="card-feat">
+        <li>Reads PDF and image drawings</li>
+        <li>Scope by trade section — fully editable</li>
+        <li>Pricing emails for subs & suppliers</li>
+      </ul>
+      <div class="card-cta">Open Tool →</div>
+    </div>
+    <div class="card" onclick="goTo('to')">
+      <div class="card-num">TOOL 02 / 02</div>
+      <div class="card-title">Quantity<br>Takeoff</div>
+      <div class="card-desc">Six separate sections — each extracts only its specific items from the right drawings. No double-counting.</div>
+      <ul class="card-feat">
+        <li>Equipment from schedule sheets only</li>
+        <li>Grilles counted from floor plans only</li>
+        <li>Flex duct as 6m bags per connection</li>
+        <li>One drawing at a time — checklist tracks progress</li>
+      </ul>
+      <div class="card-cta">Open Tool →</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCOPE -->
+<div id="vScope" class="view">
+  <div class="view-hdr">
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+    <div class="view-title">Scope Confirmation</div>
+  </div>
+  <div class="form-row">
+    <div class="fg"><label class="lbl">Project Name</label><input type="text" class="inp" id="sProj" placeholder="e.g. McDonalds Hendra"></div>
+    <div class="fg"><label class="lbl">Client / Builder</label><input type="text" class="inp" id="sCli" placeholder="e.g. Hacer Group"></div>
+  </div>
+  <div class="fg" style="margin-bottom:16px"><label class="lbl">Additional Notes</label><textarea class="inp" id="sNotes" placeholder="Any specific inclusions, exclusions, or notes..."></textarea></div>
+  <div class="zone" id="sZone">
+    <input type="file" id="sFiles" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addFiles('s',this.files)">
+    <div class="zone-icon">⬆</div>
+    <div class="zone-text">Drop all drawings here or click to browse</div>
+    <div class="zone-sub">PDF · PNG · JPG — multiple files supported</div>
+  </div>
+  <div class="chips" id="sChips"></div>
+  <div class="ebar" id="sErr"></div>
+  <button class="btn-p" id="sBtn" onclick="runScope()" style="width:auto;padding:12px 36px">Generate Scope Report</button>
+  <div class="sbar" id="sSbar"><div class="spin"></div><span id="sSbarTxt"></span></div>
+  <div style="display:none;margin-top:24px" id="sTabs">
+    <div class="tabs">
+      <button class="tab active" onclick="switchSTab('r',this)">Scope Report</button>
+      <button class="tab" onclick="switchSTab('e',this)">Pricing Emails</button>
+    </div>
+    <div id="sTabR" class="tpanel active">
+      <div class="panel show">
+        <div class="ptb"><div class="ptitle">Scope — Edit before sending</div><div class="tbtns"><button class="bsm" onclick="copyReport()">Copy</button><button class="bsm hi" onclick="dlReport()">Download .txt</button></div></div>
+        <div class="pbody"><div id="rSecs"></div><div class="add-sec-row"><input type="text" class="add-inp" id="newSecName" placeholder="New section name..."><button class="bsm" onclick="addSec()">+ Add Section</button></div></div>
       </div>
-      <div class="tool-card" onclick="goTo('takeoff')">
-        <div class="card-num">TOOL 02 / 02</div>
-        <div class="card-title">Quantity<br>Takeoff</div>
-        <div class="card-desc">Upload drawings and Claude will extract all quantities — equipment, ductwork, grilles, spiral duct, electrical.</div>
-        <ul class="card-features">
-          <li>Counts equipment from schedules</li>
-          <li>Measures duct runs and insulation types</li>
-          <li>Counts grilles, flex lengths, spiral metres</li>
-          <li>Review and edit before downloading</li>
-        </ul>
-        <div class="card-cta">Open Tool →</div>
+    </div>
+    <div id="sTabE" class="tpanel">
+      <div class="panel show" style="border-top-color:var(--border)">
+        <div class="ptb"><div class="ptitle">Pricing Request Emails</div><div class="tbtns"><button class="bsm hi" onclick="copyEmail()">Copy Email</button></div></div>
+        <div class="etabs" id="eTabBar"></div>
+        <div id="ePanels"></div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- SCOPE CONFIRMATION -->
-  <div id="viewScope" class="view">
-    <div class="view-hdr">
-      <button class="back-btn" onclick="goTo('home')">← Back</button>
-      <div class="view-title">Scope Confirmation</div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="field-lbl">Project Name</label>
-        <input type="text" class="field-inp" id="scopeProject" placeholder="e.g. McDonalds Hendra — Fitout">
-      </div>
-      <div class="form-group">
-        <label class="field-lbl">Client / Builder</label>
-        <input type="text" class="field-inp" id="scopeClient" placeholder="e.g. Hacer Group">
-      </div>
-    </div>
-    <div class="form-group" style="margin-bottom:20px">
-      <label class="field-lbl">Additional Notes (optional)</label>
-      <textarea class="field-inp" id="scopeNotes" placeholder="Any specific inclusions, exclusions, or notes..."></textarea>
-    </div>
-    <div class="upload-zone" id="scopeZone">
-      <input type="file" id="scopeFiles" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addFiles('scope', this.files)">
-      <div class="upload-icon">⬆</div>
-      <div class="upload-text">Drop drawings here or click to browse</div>
-      <div class="upload-sub">PDF · PNG · JPG — multiple files supported</div>
-    </div>
-    <div class="file-chips" id="scopeChips"></div>
-    <div class="error-bar" id="scopeError"></div>
-    <button class="btn-primary" id="scopeBtn" onclick="runScope()" style="width:auto;padding:12px 36px">Generate Scope Report</button>
-    <div class="status-bar" id="scopeStatus"><div class="spinner"></div><span id="scopeStatusText">Reading drawings...</span></div>
-
-    <!-- tabs shown after generation -->
-    <div style="margin-top:28px; display:none" id="scopeTabs">
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab('report', this)">Scope Report</button>
-        <button class="tab" onclick="switchTab('emails', this)">Pricing Emails</button>
-      </div>
-      <div id="tabReport" class="tab-panel active">
-        <div class="panel show" id="scopeReport">
-          <div class="panel-toolbar">
-            <div class="panel-title">Scope Confirmation — Edit before sending</div>
-            <div class="toolbar-btns">
-              <button class="btn-sm" onclick="copyReport()">Copy</button>
-              <button class="btn-sm hi" onclick="downloadReport()">Download .txt</button>
-            </div>
-          </div>
-          <div class="panel-body">
-            <div id="reportSections"></div>
-            <div class="add-section-row">
-              <input type="text" class="add-inp" id="newSectionName" placeholder="Add new section...">
-              <button class="btn-sm" onclick="addSection()">+ Add Section</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="tabEmails" class="tab-panel">
-        <div class="panel show" style="border-top-color:var(--border)">
-          <div class="panel-toolbar">
-            <div class="panel-title">Pricing Request Emails</div>
-            <div class="toolbar-btns">
-              <button class="btn-sm hi" onclick="copyEmail()">Copy Email</button>
-            </div>
-          </div>
-          <div class="email-tabs" id="emailTabBar"></div>
-          <div id="emailPanels"></div>
-        </div>
-      </div>
-    </div>
+<!-- TAKEOFF -->
+<div id="vTo" class="view">
+  <div class="view-hdr">
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+    <div class="view-title">Quantity Takeoff</div>
+  </div>
+  <div class="form-row" style="margin-bottom:20px">
+    <div class="fg"><label class="lbl">Project Name</label><input type="text" class="inp" id="tProj" placeholder="e.g. McDonalds Hendra"></div>
+    <div class="fg"><label class="lbl">Notes</label><input type="text" class="inp" id="tNotes" placeholder="Any special instructions..."></div>
   </div>
 
-  <!-- QUANTITY TAKEOFF -->
-  <div id="viewTakeoff" class="view">
-    <div class="view-hdr">
-      <button class="back-btn" onclick="goTo('home')">← Back</button>
-      <div class="view-title">Quantity Takeoff</div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="field-lbl">Project Name</label>
-        <input type="text" class="field-inp" id="toProject" placeholder="e.g. McDonalds Hendra — Fitout">
-      </div>
-      <div class="form-group">
-        <label class="field-lbl">Notes</label>
-        <input type="text" class="field-inp" id="toNotes" placeholder="Any special instructions...">
-      </div>
-    </div>
-    <div class="upload-zone" id="toZone">
-      <input type="file" id="toFiles" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addFiles('to', this.files)">
-      <div class="upload-icon">⬆</div>
-      <div class="upload-text">Drop drawings here or click to browse</div>
-      <div class="upload-sub">PDF · PNG · JPG — multiple files supported</div>
-    </div>
-    <div class="file-chips" id="toChips"></div>
-    <div class="error-bar" id="toError"></div>
-    <button class="btn-primary" id="toBtn" onclick="runTakeoff()" style="width:auto;padding:12px 36px">Extract Quantities</button>
-    <div class="status-bar" id="toStatus"><div class="spinner"></div><span id="toStatusText">Reading drawings...</span></div>
-
-    <!-- Checklist -->
-    <div class="checklist-wrap" id="checklist" style="display:none">
-      <div class="checklist-label">Drawing Progress</div>
-      <div class="checklist-items" id="checklistItems"></div>
-    </div>
-
-    <!-- Qty table -->
-    <div class="qty-panel" id="qtyPanel">
-      <div class="qty-panel-toolbar">
-        <div class="qty-panel-title">Extracted Quantities — Review & Edit</div>
-        <div class="toolbar-btns">
-          <button class="btn-sm hi" onclick="downloadQty()">Download CSV</button>
-        </div>
-      </div>
-      <div id="qtyTableContent"></div>
-    </div>
+  <div class="to-tabs">
+    <button class="to-tab active" onclick="switchTo(0,this)" id="tt0">Equipment<span class="badge" id="tb0">0</span></button>
+    <button class="to-tab" onclick="switchTo(1,this)" id="tt1">Ductwork<span class="badge" id="tb1">0</span></button>
+    <button class="to-tab" onclick="switchTo(2,this)" id="tt2">Grilles &amp; Diffusers<span class="badge" id="tb2">0</span></button>
+    <button class="to-tab" onclick="switchTo(3,this)" id="tt3">Flexible Duct<span class="badge" id="tb3">0</span></button>
+    <button class="to-tab" onclick="switchTo(4,this)" id="tt4">Spiral Duct<span class="badge" id="tb4">0</span></button>
+    <button class="to-tab" onclick="switchTo(5,this)" id="tt5">Electrical<span class="badge" id="tb5">0</span></button>
   </div>
 
+  <div class="sp active" id="sp0">
+    <div class="hint"><strong>Equipment Schedule</strong> — Upload schedule sheets only (e.g. M002). Claude counts from the schedule table only — never from floor plans. This prevents double-counting.</div>
+    <div class="zone" id="z0"><input type="file" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addSec(0,this.files)"><div class="zone-icon">⬆</div><div class="zone-text">Drop schedule sheets here</div><div class="zone-sub">e.g. M002 SCHEDULES</div></div>
+    <div class="chips" id="c0"></div><div class="ebar" id="e0"></div>
+    <button class="btn-p" onclick="runSec(0)" id="b0" style="width:auto;padding:12px 36px">Extract Equipment</button>
+    <div class="sbar" id="s0"><div class="spin"></div><span id="st0"></span></div>
+    <div class="cl-wrap" id="cl0" style="display:none"><div class="cl-lbl">Drawing Progress</div><div class="cl-items" id="ci0"></div></div>
+    <div class="qp" id="q0"><div class="qptb"><div class="qptitle">Equipment — Review &amp; Edit</div><div class="tbtns"><button class="bsm hi" onclick="dlSec(0)">Download CSV</button></div></div><div id="qt0"></div></div>
+  </div>
+
+  <div class="sp" id="sp1">
+    <div class="hint"><strong>Ductwork</strong> — Upload floor plans and roof plans (e.g. M100, M200). Claude identifies duct sizes and fittings. <em>You measure run lengths in Bluebeam</em> — quantities are placeholders for you to update.</div>
+    <div class="zone" id="z1"><input type="file" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addSec(1,this.files)"><div class="zone-icon">⬆</div><div class="zone-text">Drop floor plans and roof plans</div><div class="zone-sub">e.g. M100, M200</div></div>
+    <div class="chips" id="c1"></div><div class="ebar" id="e1"></div>
+    <button class="btn-p" onclick="runSec(1)" id="b1" style="width:auto;padding:12px 36px">Extract Ductwork</button>
+    <div class="sbar" id="s1"><div class="spin"></div><span id="st1"></span></div>
+    <div class="cl-wrap" id="cl1" style="display:none"><div class="cl-lbl">Drawing Progress</div><div class="cl-items" id="ci1"></div></div>
+    <div class="qp" id="q1"><div class="qptb"><div class="qptitle">Ductwork — Enter measured lengths then Download</div><div class="tbtns"><button class="bsm hi" onclick="dlSec(1)">Download CSV</button></div></div><div id="qt1"></div></div>
+  </div>
+
+  <div class="sp" id="sp2">
+    <div class="hint"><strong>Grilles &amp; Diffusers</strong> — Upload floor plans only (e.g. M100). Claude counts every grille individually by type, size and colour. Do not upload schedule or detail sheets — this prevents double-counting.</div>
+    <div class="zone" id="z2"><input type="file" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addSec(2,this.files)"><div class="zone-icon">⬆</div><div class="zone-text">Drop floor plans here</div><div class="zone-sub">e.g. M100 MECHANICAL FLOOR PLAN</div></div>
+    <div class="chips" id="c2"></div><div class="ebar" id="e2"></div>
+    <button class="btn-p" onclick="runSec(2)" id="b2" style="width:auto;padding:12px 36px">Count Grilles &amp; Diffusers</button>
+    <div class="sbar" id="s2"><div class="spin"></div><span id="st2"></span></div>
+    <div class="cl-wrap" id="cl2" style="display:none"><div class="cl-lbl">Drawing Progress</div><div class="cl-items" id="ci2"></div></div>
+    <div class="qp" id="q2"><div class="qptb"><div class="qptitle">Grilles &amp; Diffusers — Review &amp; Edit</div><div class="tbtns"><button class="bsm hi" onclick="dlSec(2)">Download CSV</button></div></div><div id="qt2"></div></div>
+  </div>
+
+  <div class="sp" id="sp3">
+    <div class="hint"><strong>Flexible Duct</strong> — Upload floor plans only. Claude counts flex connections and maps airflow (L/s) to diameter. Each connection = 1 bag (6m). Bags are rounded up — a 3m run still = 1 bag.</div>
+    <div class="zone" id="z3"><input type="file" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addSec(3,this.files)"><div class="zone-icon">⬆</div><div class="zone-text">Drop floor plans here</div><div class="zone-sub">e.g. M100 MECHANICAL FLOOR PLAN</div></div>
+    <div class="chips" id="c3"></div><div class="ebar" id="e3"></div>
+    <button class="btn-p" onclick="runSec(3)" id="b3" style="width:auto;padding:12px 36px">Count Flex Duct Bags</button>
+    <div class="sbar" id="s3"><div class="spin"></div><span id="st3"></span></div>
+    <div class="cl-wrap" id="cl3" style="display:none"><div class="cl-lbl">Drawing Progress</div><div class="cl-items" id="ci3"></div></div>
+    <div class="qp" id="q3"><div class="qptb"><div class="qptitle">Flexible Duct — Bags (6m each)</div><div class="tbtns"><button class="bsm hi" onclick="dlSec(3)">Download CSV</button></div></div><div id="qt3"></div></div>
+  </div>
+
+  <div class="sp" id="sp4">
+    <div class="hint"><strong>Spiral Duct</strong> — Upload floor plans and roof plans. Claude identifies circular duct diameters. <em>You measure run lengths in Bluebeam</em> — quantities are placeholders per diameter for you to update.</div>
+    <div class="zone" id="z4"><input type="file" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addSec(4,this.files)"><div class="zone-icon">⬆</div><div class="zone-text">Drop floor plans and roof plans</div><div class="zone-sub">e.g. M100, M200</div></div>
+    <div class="chips" id="c4"></div><div class="ebar" id="e4"></div>
+    <button class="btn-p" onclick="runSec(4)" id="b4" style="width:auto;padding:12px 36px">Extract Spiral Duct</button>
+    <div class="sbar" id="s4"><div class="spin"></div><span id="st4"></span></div>
+    <div class="cl-wrap" id="cl4" style="display:none"><div class="cl-lbl">Drawing Progress</div><div class="cl-items" id="ci4"></div></div>
+    <div class="qp" id="q4"><div class="qptb"><div class="qptitle">Spiral Duct — Enter measured lengths then Download</div><div class="tbtns"><button class="bsm hi" onclick="dlSec(4)">Download CSV</button></div></div><div id="qt4"></div></div>
+  </div>
+
+  <div class="sp" id="sp5">
+    <div class="hint"><strong>Electrical</strong> — Upload schedule sheets and floor plans. Claude counts electrical connections, isolators, motorised dampers, and controls for the electrical subcontractor package.</div>
+    <div class="zone" id="z5"><input type="file" multiple accept=".pdf,.png,.jpg,.jpeg" onchange="addSec(5,this.files)"><div class="zone-icon">⬆</div><div class="zone-text">Drop schedule sheets and floor plans</div><div class="zone-sub">e.g. M002, M100</div></div>
+    <div class="chips" id="c5"></div><div class="ebar" id="e5"></div>
+    <button class="btn-p" onclick="runSec(5)" id="b5" style="width:auto;padding:12px 36px">Extract Electrical</button>
+    <div class="sbar" id="s5"><div class="spin"></div><span id="st5"></span></div>
+    <div class="cl-wrap" id="cl5" style="display:none"><div class="cl-lbl">Drawing Progress</div><div class="cl-items" id="ci5"></div></div>
+    <div class="qp" id="q5"><div class="qptb"><div class="qptitle">Electrical — Review &amp; Edit</div><div class="tbtns"><button class="bsm hi" onclick="dlSec(5)">Download CSV</button></div></div><div id="qt5"></div></div>
+  </div>
+
+</div>
 </main>
 
 <script>
-// ── STATE ──────────────────────────────────────────────────
-const S = {
-  scopeFiles: [],
-  toFiles: [],
-  sections: [],
-  emails: {},
-  quantities: {},
-  activeEmail: 0
+const S={sFiles:[],sSecs:[],sEmails:{},aEmail:0,tFiles:[[],[],[],[],[],[]],tData:[[],[],[],[],[],[]]};
+
+function openKey(){document.getElementById('keyInp').value=localStorage.getItem('bl_key')||'';document.getElementById('keyModal').classList.remove('hidden')}
+function saveKey(){const k=document.getElementById('keyInp').value.trim();if(!k)return;localStorage.setItem('bl_key',k);document.getElementById('keyModal').classList.add('hidden');updKey()}
+function updKey(){const k=localStorage.getItem('bl_key');document.getElementById('apiDot').className='api-dot'+(k?' on':'');document.getElementById('apiLbl').textContent=k?'API KEY SET':'NO API KEY'}
+function getKey(){return localStorage.getItem('bl_key')}
+
+function goTo(v){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById({home:'vHome',scope:'vScope',to:'vTo'}[v]).classList.add('active')}
+function switchSTab(t,btn){document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('sTabR').classList.toggle('active',t==='r');document.getElementById('sTabE').classList.toggle('active',t==='e')}
+function switchTo(i,btn){document.querySelectorAll('.to-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.sp').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('sp'+i).classList.add('active')}
+
+function addFiles(p,files){const a=S.sFiles;for(const f of files){if(!a.find(x=>x.name===f.name))a.push(f)}rChips('s')}
+function rChips(p){document.getElementById('sChips').innerHTML=S.sFiles.map((f,i)=>`<div class="chip"><span>${f.name}</span><button class="chip-x" onclick="S.sFiles.splice(${i},1);rChips('s')">×</button></div>`).join('')}
+function addSec(n,files){const a=S.tFiles[n];for(const f of files){if(!a.find(x=>x.name===f.name))a.push(f)}rSecChips(n)}
+function rSecChips(n){document.getElementById('c'+n).innerHTML=S.tFiles[n].map((f,i)=>`<div class="chip"><span>${f.name}</span><button class="chip-x" onclick="S.tFiles[${n}].splice(${i},1);rSecChips(${n})">×</button></div>`).join('')}
+
+function b64(file){return new Promise((r,j)=>{const rd=new FileReader();rd.onload=()=>r(rd.result.split(',')[1]);rd.onerror=()=>j(new Error('Read failed'));rd.readAsDataURL(file)})}
+function mt(file){const e=file.name.split('.').pop().toLowerCase();return e==='pdf'?'application/pdf':e==='png'?'image/png':'image/jpeg'}
+
+async function api(msgs,sys,max){
+  const k=getKey();if(!k)throw new Error('No API key set.');
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:max||4096,system:sys,messages:msgs})});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||'API error '+r.status)}
+  const d=await r.json();return d.content.map(b=>b.text||'').join('')
 }
 
-// ── API KEY ────────────────────────────────────────────────
-function openApiModal() {
-  document.getElementById('apiKeyInput').value = localStorage.getItem('bl_key') || ''
-  document.getElementById('apiModal').classList.remove('hidden')
-}
-function saveKey() {
-  const k = document.getElementById('apiKeyInput').value.trim()
-  if (!k) return
-  localStorage.setItem('bl_key', k)
-  document.getElementById('apiModal').classList.add('hidden')
-  updateApiStatus()
-}
-function updateApiStatus() {
-  const k = localStorage.getItem('bl_key')
-  document.getElementById('apiDot').className = 'api-dot' + (k ? ' on' : '')
-  document.getElementById('apiLabel').textContent = k ? 'API KEY SET' : 'NO API KEY'
-}
-function getKey() { return localStorage.getItem('bl_key') }
+function showE(id,msg){const e=document.getElementById(id);e.textContent=msg;e.classList.add('show')}
+function hideE(id){document.getElementById(id)?.classList.remove('show')}
+function setTxt(id,t){const e=document.getElementById(id);if(e)e.textContent=t}
+function setLoad(bi,si,on,msg){const b=document.getElementById(bi),s=document.getElementById(si);if(b)b.disabled=on;if(s)s.classList.toggle('show',on);if(msg)setTxt(si.replace('s','st').replace('bar',''),''+msg)}
 
-// ── NAV ────────────────────────────────────────────────────
-function goTo(view) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'))
-  const map = { home: 'viewHome', scope: 'viewScope', takeoff: 'viewTakeoff' }
-  document.getElementById(map[view]).classList.add('active')
-}
-
-function switchTab(tab, btn) {
-  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'))
-  btn.classList.add('active')
-  document.getElementById('tabReport').classList.toggle('active', tab === 'report')
-  document.getElementById('tabEmails').classList.toggle('active', tab === 'emails')
-}
-
-// ── FILES ──────────────────────────────────────────────────
-function addFiles(prefix, fileList) {
-  const arr = prefix === 'scope' ? S.scopeFiles : S.toFiles
-  for (const f of fileList) { if (!arr.find(x => x.name === f.name)) arr.push(f) }
-  renderChips(prefix)
-}
-function renderChips(prefix) {
-  const arr = prefix === 'scope' ? S.scopeFiles : S.toFiles
-  const el = document.getElementById(prefix === 'scope' ? 'scopeChips' : 'toChips')
-  el.innerHTML = arr.map((f, i) => `
-    <div class="file-chip">
-      <span>${f.name}</span>
-      <button class="chip-x" onclick="removeFile('${prefix}',${i})">×</button>
-    </div>`).join('')
-}
-function removeFile(prefix, i) {
-  (prefix === 'scope' ? S.scopeFiles : S.toFiles).splice(i, 1)
-  renderChips(prefix)
-}
-
-// ── FILE → BASE64 ─────────────────────────────────────────
-function toBase64(file) {
-  return new Promise((res, rej) => {
-    const r = new FileReader()
-    r.onload = () => res(r.result.split(',')[1])
-    r.onerror = () => rej(new Error('Read failed'))
-    r.readAsDataURL(file)
-  })
-}
-function mediaType(file) {
-  const ext = file.name.split('.').pop().toLowerCase()
-  return ext === 'pdf' ? 'application/pdf' : ext === 'png' ? 'image/png' : 'image/jpeg'
-}
-
-// ── API CALL ───────────────────────────────────────────────
-async function callClaude(messages, system, maxTokens) {
-  const key = getKey()
-  if (!key) throw new Error('No API key set. Click API KEY in the header.')
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': key,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens || 4096, system, messages })
-  })
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}))
-    throw new Error(err.error?.message || `API error ${resp.status}`)
-  }
-  const data = await resp.json()
-  return data.content.map(b => b.text || '').join('')
-}
-
-// ── UI HELPERS ─────────────────────────────────────────────
-function showErr(prefix, msg) {
-  const el = document.getElementById(prefix === 'scope' ? 'scopeError' : 'toError')
-  el.textContent = msg; el.classList.add('show')
-}
-function hideErr(prefix) {
-  const el = document.getElementById(prefix === 'scope' ? 'scopeError' : 'toError')
-  el.classList.remove('show')
-}
-function setStatus(prefix, msg) {
-  document.getElementById(prefix === 'scope' ? 'scopeStatusText' : 'toStatusText').textContent = msg
-}
-function setLoading(prefix, on, msg) {
-  const btn = document.getElementById(prefix === 'scope' ? 'scopeBtn' : 'toBtn')
-  const bar = document.getElementById(prefix === 'scope' ? 'scopeStatus' : 'toStatus')
-  btn.disabled = on
-  bar.classList.toggle('show', on)
-  if (msg) setStatus(prefix, msg)
-}
-
-// ── SCOPE CONFIRMATION ─────────────────────────────────────
-async function runScope() {
-  if (!getKey()) { showErr('scope', 'No API key set. Click API KEY in the header.'); return }
-  if (!S.scopeFiles.length) { showErr('scope', 'Please upload at least one drawing.'); return }
-  hideErr('scope')
-
-  const project = document.getElementById('scopeProject').value.trim() || 'This Project'
-  const client  = document.getElementById('scopeClient').value.trim()
-  const notes   = document.getElementById('scopeNotes').value.trim()
-
-  setLoading('scope', true, `Reading drawing 1 of ${S.scopeFiles.length}...`)
-
-  try {
-    // Build message with all drawings
-    const msgs = []
-    for (let i = 0; i < S.scopeFiles.length; i++) {
-      const f = S.scopeFiles[i]
-      setStatus('scope', `Loading drawing ${i+1} of ${S.scopeFiles.length}: ${f.name}...`)
-      const b64 = await toBase64(f)
-      const mt  = mediaType(f)
-      if (mt === 'application/pdf') {
-        msgs.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
-      } else {
-        msgs.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
-      }
-      msgs.push({ type: 'text', text: `(Drawing ${i+1}: ${f.name})` })
+async function runScope(){
+  if(!getKey()){showE('sErr','No API key.');return}
+  if(!S.sFiles.length){showE('sErr','Upload at least one drawing.');return}
+  hideE('sErr');
+  const proj=document.getElementById('sProj').value.trim()||'This Project';
+  const cli=document.getElementById('sCli').value.trim();
+  const notes=document.getElementById('sNotes').value.trim();
+  document.getElementById('sBtn').disabled=true;
+  document.getElementById('sSbar').classList.add('show');
+  try{
+    const msgs=[];
+    for(let i=0;i<S.sFiles.length;i++){
+      const f=S.sFiles[i];
+      setTxt('sSbarTxt',`Loading ${i+1} of ${S.sFiles.length}: ${f.name}...`);
+      const data=await b64(f);const m=mt(f);
+      if(m==='application/pdf')msgs.push({type:'document',source:{type:'base64',media_type:m,data}});
+      else msgs.push({type:'image',source:{type:'base64',media_type:m,data}});
+      msgs.push({type:'text',text:`(Drawing ${i+1}: ${f.name})`});
     }
-    msgs.push({ type: 'text', text: `Project: ${project}${client ? ', Client: ' + client : ''}${notes ? '. Notes: ' + notes : ''}.
+    msgs.push({type:'text',text:`Project: ${proj}${cli?', Client: '+cli:''}${notes?'. Notes: '+notes:''}.
 
-Read all the mechanical drawings above and generate a full scope confirmation report for BL Air Mechanical Services Pty Ltd.
+Read all mechanical drawings and generate a full scope confirmation report for BL Air Mechanical Services Pty Ltd.
 
-Use ### before each section title and - before each item. Include these sections:
+Use ### before each section title and - before each item:
 
 ### EQUIPMENT SCHEDULE
 ### DUCTWORK & SHEETMETAL
@@ -554,310 +394,163 @@ Use ### before each section title and - before each item. Include these sections
 ### COMMISSIONING
 ### EXCLUSIONS
 - Core holes (by builder)
-- Power supply to equipment (power adjacent, by electrical contractor)
-- BMS / building management system (unless noted)
+- Power supply to equipment (by electrical contractor)
+- BMS (unless noted)
 - Fire rating of penetrations (by others)
 - Hydraulic works
 ### ASSUMPTIONS
 
-Be thorough and specific — use actual equipment models, sizes, quantities and airflows from the drawings.` })
-
-    setStatus('scope', 'Generating scope report...')
-
-    const result = await callClaude(
-      [{ role: 'user', content: msgs }],
-      'You are a senior mechanical estimator at BL Air Mechanical Services Pty Ltd, a mechanical contractor in Queensland, Australia. Generate detailed, accurate scope confirmation reports from mechanical drawings.',
-      6000
-    )
-
-    // Parse plain text sections
-    S.sections = []
-    const parts = result.split(/^###\s+/m).filter(s => s.trim())
-    for (const part of parts) {
-      const lines = part.trim().split('\n')
-      const title = lines[0].trim()
-      const items = lines.slice(1)
-        .filter(l => l.trim().startsWith('-'))
-        .map(l => l.trim().replace(/^-\s*/, '').trim())
-        .filter(l => l)
-      if (title) S.sections.push({ title, items })
-    }
-
-    if (!S.sections.length) throw new Error('Could not parse scope report. Please try again.')
-
-    S.emails = {}
-    renderReport()
-    document.getElementById('scopeTabs').style.display = 'block'
-    setLoading('scope', false)
-
-    // Generate emails in background
-    generateEmails(project, client)
-
-  } catch (e) {
-    setLoading('scope', false)
-    showErr('scope', e.message)
+Be thorough — use actual model numbers, sizes, quantities and airflows.`});
+    setTxt('sSbarTxt','Generating scope report...');
+    const res=await api([{role:'user',content:msgs}],'You are a senior mechanical estimator at BL Air Mechanical Services Pty Ltd, a mechanical contractor in Queensland, Australia.',6000);
+    S.sSecs=[];
+    const parts=res.split(/^###\s+/m).filter(s=>s.trim());
+    for(const part of parts){const lines=part.trim().split('\n');const title=lines[0].trim();const items=lines.slice(1).filter(l=>l.trim().startsWith('-')).map(l=>l.trim().replace(/^-\s*/,'')).filter(l=>l);if(title)S.sSecs.push({title,items})}
+    if(!S.sSecs.length)throw new Error('Could not parse report. Please try again.');
+    S.sEmails={};rReport();
+    document.getElementById('sTabs').style.display='block';
+    document.getElementById('sBtn').disabled=false;
+    document.getElementById('sSbar').classList.remove('show');
+    genEmails(proj,cli);
+  }catch(err){
+    document.getElementById('sBtn').disabled=false;
+    document.getElementById('sSbar').classList.remove('show');
+    showE('sErr',err.message);
   }
 }
 
-async function generateEmails(project, client) {
-  try {
-    const scopeSummary = S.sections.map(s => s.title + ': ' + s.items.join(', ')).join('\n')
-    const result = await callClaude(
-      [{ role: 'user', content: `Project: ${project}${client ? ', Client: ' + client : ''}.\n\nScope summary:\n${scopeSummary}\n\nWrite 8 professional pricing request emails from BL Air Mechanical Services Pty Ltd. Return ONLY a JSON object with these keys: "AC Equipment", "Rectangular Ductwork", "Spiral Duct", "Fans & Grilles", "Duct Install Subcontractor", "Pipework Subcontractor", "Mechanical Electrical Subcontractor", "Rigging Subcontractor". Each value is the full email text. Return ONLY valid JSON, no other text.` }],
-      'You are a senior mechanical estimator writing professional pricing request emails for a mechanical contractor in Queensland, Australia.',
-      3000
-    )
-    const clean = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-    S.emails = JSON.parse(clean)
-    renderEmails()
-  } catch (e) {
-    console.warn('Email generation failed:', e)
-  }
+async function genEmails(proj,cli){
+  try{
+    setTxt('sSbarTxt','Generating pricing emails...');
+    document.getElementById('sSbar').classList.add('show');
+    const sum=S.sSecs.map(s=>s.title+': '+s.items.join(', ')).join('\n');
+    const res=await api([{role:'user',content:`Project: ${proj}${cli?', Client: '+cli:''}.\n\nScope:\n${sum}\n\nWrite 8 pricing request emails from BL Air Mechanical Services Pty Ltd. Return ONLY a JSON object with keys: "AC Equipment", "Rectangular Ductwork", "Spiral Duct", "Fans & Grilles", "Duct Install Subcontractor", "Pipework Subcontractor", "Mechanical Electrical Subcontractor", "Rigging Subcontractor". Each value is the full email text. ONLY valid JSON.`}],'Senior mechanical estimator writing pricing emails for a QLD mechanical contractor.',3000);
+    const clean=res.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    S.sEmails=JSON.parse(clean);rEmails();
+    document.getElementById('sSbar').classList.remove('show');
+  }catch(e){document.getElementById('sSbar').classList.remove('show');console.warn('Email gen failed:',e)}
 }
 
-// ── REPORT RENDER ──────────────────────────────────────────
-function renderReport() {
-  document.getElementById('reportSections').innerHTML = S.sections.map((sec, si) => `
-    <div class="report-section" id="sec${si}">
-      <div class="section-hdr">
-        <div class="section-title">${sec.title}</div>
-        <div style="display:flex;gap:6px">
-          <button class="btn-sm" onclick="addItem(${si})">+ Add</button>
-          <button class="btn-sm" onclick="removeSec(${si})" style="color:#c88">Remove</button>
-        </div>
-      </div>
-      <div class="section-body">
-        <ul class="section-items" id="items${si}">
-          ${sec.items.map((item, ii) => itemHTML(si, ii, item)).join('')}
-        </ul>
-        <div class="add-row">
-          <input type="text" class="add-inp" id="newItem${si}" placeholder="Add item..." onkeydown="if(event.key==='Enter')addItem(${si})">
-          <button class="btn-sm" onclick="addItem(${si})">+ Add</button>
-        </div>
-      </div>
-    </div>`).join('')
+function rReport(){
+  document.getElementById('rSecs').innerHTML=S.sSecs.map((sec,si)=>`
+    <div class="rsec"><div class="shdr"><div class="stitle">${sec.title}</div><div style="display:flex;gap:6px"><button class="bsm" onclick="addItem(${si})">+ Add</button><button class="bsm" style="color:#e88" onclick="S.sSecs.splice(${si},1);rReport()">Remove</button></div></div>
+    <div class="sbody"><ul class="sitems" id="si${si}">${sec.items.map((it,ii)=>iHTML(si,ii,it)).join('')}</ul>
+    <div class="add-row"><input type="text" class="add-inp" id="ni${si}" placeholder="Add item..." onkeydown="if(event.key==='Enter')addItem(${si})"><button class="bsm" onclick="addItem(${si})">+ Add</button></div></div></div>`).join('')
 }
-function itemHTML(si, ii, text) {
-  return `<li class="section-item" id="item${si}_${ii}">
-    <span class="item-bullet">—</span>
-    <div class="item-text" contenteditable="true" onblur="S.sections[${si}].items[${ii}]=this.textContent.trim()">${text}</div>
-    <button class="item-del" onclick="removeItem(${si},${ii})">×</button>
-  </li>`
-}
-function addItem(si) {
-  const inp = document.getElementById(`newItem${si}`)
-  const txt = inp.value.trim()
-  if (!txt) return
-  S.sections[si].items.push(txt)
-  inp.value = ''
-  document.getElementById(`items${si}`).insertAdjacentHTML('beforeend', itemHTML(si, S.sections[si].items.length-1, txt))
-}
-function removeItem(si, ii) {
-  document.getElementById(`item${si}_${ii}`)?.remove()
-  S.sections[si].items.splice(ii, 1)
-}
-function removeSec(si) {
-  S.sections.splice(si, 1)
-  renderReport()
-}
-function addSection() {
-  const inp = document.getElementById('newSectionName')
-  const name = inp.value.trim().toUpperCase()
-  if (!name) return
-  S.sections.push({ title: name, items: [] })
-  inp.value = ''
-  renderReport()
-}
-function copyReport() {
-  let txt = `SCOPE CONFIRMATION — ${document.getElementById('scopeProject').value || ''}\nBL Air Mechanical Services Pty Ltd\n${'='.repeat(60)}\n\n`
-  S.sections.forEach(s => { txt += `${s.title}\n${'-'.repeat(s.title.length)}\n`; s.items.forEach(i => txt += `• ${i}\n`); txt += '\n' })
-  navigator.clipboard.writeText(txt).then(() => alert('Copied to clipboard'))
-}
-function downloadReport() {
-  const project = document.getElementById('scopeProject').value || 'Scope'
-  let txt = `SCOPE CONFIRMATION — ${project.toUpperCase()}\nBL Air Mechanical Services Pty Ltd\n${'='.repeat(60)}\n\n`
-  S.sections.forEach(s => { txt += `${s.title}\n${'-'.repeat(s.title.length)}\n`; s.items.forEach(i => txt += `• ${i}\n`); txt += '\n' })
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(new Blob([txt], { type: 'text/plain' }))
-  a.download = `${project.replace(/\s+/g,'_')}_Scope.txt`
-  a.click()
-}
+function iHTML(si,ii,t){return`<li class="sitem" id="it${si}_${ii}"><span class="ibullet">—</span><div class="itext" contenteditable="true" onblur="S.sSecs[${si}].items[${ii}]=this.textContent.trim()">${t}</div><button class="idel" onclick="document.getElementById('it${si}_${ii}').remove();S.sSecs[${si}].items.splice(${ii},1)">×</button></li>`}
+function addItem(si){const inp=document.getElementById('ni'+si);const t=inp.value.trim();if(!t)return;S.sSecs[si].items.push(t);inp.value='';document.getElementById('si'+si).insertAdjacentHTML('beforeend',iHTML(si,S.sSecs[si].items.length-1,t))}
+function addSec(){const inp=document.getElementById('newSecName');const n=inp.value.trim().toUpperCase();if(!n)return;S.sSecs.push({title:n,items:[]});inp.value='';rReport()}
+function copyReport(){let t=`SCOPE CONFIRMATION — ${document.getElementById('sProj').value||''}\nBL Air Mechanical Services Pty Ltd\n${'='.repeat(60)}\n\n`;S.sSecs.forEach(s=>{t+=`${s.title}\n${'-'.repeat(s.title.length)}\n`;s.items.forEach(i=>t+=`• ${i}\n`);t+='\n'});navigator.clipboard.writeText(t).then(()=>alert('Copied'))}
+function dlReport(){const p=document.getElementById('sProj').value||'Scope';let t=`SCOPE CONFIRMATION — ${p.toUpperCase()}\nBL Air Mechanical Services Pty Ltd\n${'='.repeat(60)}\n\n`;S.sSecs.forEach(s=>{t+=`${s.title}\n${'-'.repeat(s.title.length)}\n`;s.items.forEach(i=>t+=`• ${i}\n`);t+='\n'});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download=`${p.replace(/\s+/g,'_')}_Scope.txt`;a.click()}
+function rEmails(){const ks=Object.keys(S.sEmails);if(!ks.length)return;document.getElementById('eTabBar').innerHTML=ks.map((k,i)=>`<button class="etab${i===0?' active':''}" onclick="swEmail(${i},this)">${k}</button>`).join('');document.getElementById('ePanels').innerHTML=ks.map((k,i)=>`<div class="epanel${i===0?' active':''}" id="ep${i}"><label class="lbl" style="margin:12px 16px 8px;display:block">${k}</label><textarea class="ebody" id="eb${i}">${S.sEmails[k]}</textarea></div>`).join('')}
+function swEmail(i,btn){document.querySelectorAll('.etab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.epanel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('ep'+i)?.classList.add('active');S.aEmail=i}
+function copyEmail(){const ta=document.getElementById('eb'+S.aEmail);if(ta)navigator.clipboard.writeText(ta.value).then(()=>alert('Email copied'))}
 
-// ── EMAILS ────────────────────────────────────────────────
-function renderEmails() {
-  const keys = Object.keys(S.emails)
-  if (!keys.length) return
-  document.getElementById('emailTabBar').innerHTML = keys.map((k, i) =>
-    `<button class="email-tab${i===0?' active':''}" onclick="switchEmail(${i},this)">${k}</button>`).join('')
-  document.getElementById('emailPanels').innerHTML = keys.map((k, i) =>
-    `<div class="email-panel${i===0?' active':''}" id="ep${i}">
-      <label class="field-lbl" style="margin:12px 16px 8px;display:block">${k}</label>
-      <textarea class="email-body" id="eb${i}">${S.emails[k]}</textarea>
-    </div>`).join('')
-  S.activeEmail = 0
-}
-function switchEmail(i, btn) {
-  document.querySelectorAll('.email-tab').forEach(t => t.classList.remove('active'))
-  document.querySelectorAll('.email-panel').forEach(p => p.classList.remove('active'))
-  btn.classList.add('active')
-  document.getElementById(`ep${i}`)?.classList.add('active')
-  S.activeEmail = i
-}
-function copyEmail() {
-  const ta = document.getElementById(`eb${S.activeEmail}`)
-  if (ta) navigator.clipboard.writeText(ta.value).then(() => alert('Email copied'))
-}
+const CFG=[
+  {name:'Equipment',prompt:`You are an expert mechanical estimator. Extract equipment from this SCHEDULE SHEET ONLY.
+Count each item exactly once from the schedule table. DO NOT count from floor plans.
+Return ONLY a valid JSON array — no markdown, no explanation:
+[{"description":"exact model name and tag","qty":1,"unit":"no.","notes":"key specs: kW, L/s, phases"}]
+Include: AC units, fans, FCUs, AHUs, ERVs, VRF, heat pumps, kitchen hoods. qty must be > 0. Return ONLY the JSON array.`},
+  {name:'Ductwork',prompt:`You are an expert mechanical estimator. Extract ductwork from this floor plan or roof plan.
+DO NOT measure lengths — the estimator measures in Bluebeam. List each duct size found with qty=1 as a placeholder. Count fittings (VCDs, fire dampers, canvas connections) that can be counted directly.
+Return ONLY a valid JSON array:
+[{"description":"Rectangular Duct 750x700mm 75mm internal insulation","qty":1,"unit":"m","notes":"PLACEHOLDER - measure in Bluebeam"},{"description":"Volume Control Damper","qty":2,"unit":"no.","notes":"shown on drawing"}]
+Include insulation type (none/50mm/75mm/100mm internal). Return ONLY the JSON array.`},
+  {name:'Grilles',prompt:`You are an expert mechanical estimator. Count every grille and diffuser on this floor plan.
+Count each grille INDIVIDUALLY. Note colour if specified. Group identical items (same ref, size, colour).
+Return ONLY a valid JSON array:
+[{"description":"S1 450x450 4-Way Blow Diffuser White","qty":4,"unit":"no.","notes":"cushion head box"},{"description":"R1 600x600 Half Chevron Return Grille White","qty":2,"unit":"no.","notes":"removable core"}]
+Include: supply, return, exhaust, transfer, door relief grilles. Return ONLY the JSON array.`},
+  {name:'Flex Duct',prompt:`You are an expert mechanical estimator. Count flexible duct connections on this floor plan.
+Rules: 1 connection = 1 bag (6m) regardless of run length.
+Map airflow L/s to diameter: 0-50=150mm, 51-100=200mm, 101-180=250mm, 181-300=300mm, 301-400=350mm, 401-500=400mm, 501-600=450mm, 601-700=500mm.
+Return ONLY a valid JSON array:
+[{"description":"150mm Flex Duct R1.0","qty":3,"unit":"bags (6m)","notes":"0-50 L/s connections"},{"description":"250mm Flex Duct R1.0","qty":5,"unit":"bags (6m)","notes":"101-180 L/s connections"}]
+Return ONLY the JSON array.`},
+  {name:'Spiral Duct',prompt:`You are an expert mechanical estimator. Identify spiral/circular duct diameters on this drawing.
+DO NOT measure lengths — the estimator measures in Bluebeam. List each diameter as qty=1 placeholder.
+Return ONLY a valid JSON array:
+[{"description":"200mm Spiral Duct","qty":1,"unit":"m","notes":"PLACEHOLDER - measure in Bluebeam"}]
+Include all diameters found. Return ONLY the JSON array.`},
+  {name:'Electrical',prompt:`You are an expert mechanical estimator. Extract electrical items for mechanical services.
+Count: electrical connections to AC units and fans (by phase), isolators, motorised dampers, thermostats, speed controllers.
+Return ONLY a valid JSON array:
+[{"description":"Electrical Connection 3-phase AC Unit","qty":2,"unit":"no.","notes":"PAC-1 and PAC-2"},{"description":"Weatherproof Isolating Switch","qty":7,"unit":"no.","notes":"one per fan"}]
+Return ONLY the JSON array.`}
+];
 
-// ── QUANTITY TAKEOFF ───────────────────────────────────────
-async function runTakeoff() {
-  if (!getKey()) { showErr('to', 'No API key set. Click API KEY in the header.'); return }
-  if (!S.toFiles.length) { showErr('to', 'Please upload at least one drawing.'); return }
-  hideErr('to')
-
-  setLoading('to', true, 'Starting...')
-
-  // Show checklist
-  const cl = document.getElementById('checklist')
-  const cli = document.getElementById('checklistItems')
-  cl.style.display = 'block'
-  cli.innerHTML = S.toFiles.map((f, i) =>
-    `<div class="check-chip" id="cc${i}"><span id="ci${i}">⏳</span><span>${f.name}</span></div>`
-  ).join('')
-
-  try {
-    let allQty = {}
-
-    for (let i = 0; i < S.toFiles.length; i++) {
-      const f = S.toFiles[i]
-      setStatus('to', `Processing ${i+1} of ${S.toFiles.length}: ${f.name}...`)
-
-      // Update checklist
-      const chip = document.getElementById(`cc${i}`)
-      const icon = document.getElementById(`ci${i}`)
-      if (chip) chip.className = 'check-chip processing'
-      if (icon) icon.textContent = '⟳'
-
-      const b64 = await toBase64(f)
-      const mt  = mediaType(f)
-      const fileContent = []
-
-      if (mt === 'application/pdf') {
-        fileContent.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
-      } else {
-        fileContent.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
-      }
-      fileContent.push({ type: 'text', text: `File: ${f.name}. Extract ALL mechanical quantities from this drawing. Count every piece of equipment, every grille and diffuser individually, measure all duct runs, count flex duct lengths, measure spiral duct per diameter. Cross-reference equipment schedules. Be thorough — do not skip any items.` })
-
-      const systemPrompt = `You are an expert mechanical estimator. Extract quantities from mechanical drawings for BL Air Mechanical Services Pty Ltd.
-
-Return ONLY valid JSON with this exact structure (omit items with qty 0):
-{
-  "equipment": [{"description": "...", "qty": 0, "unit": "no.", "notes": ""}],
-  "ductwork": [{"description": "...", "qty": 0, "unit": "m", "notes": ""}],
-  "grilles": [{"description": "...", "qty": 0, "unit": "no.", "notes": ""}],
-  "flexDuct": [{"description": "...", "qty": 0, "unit": "lengths (6m)", "notes": ""}],
-  "spiralDuct": [{"description": "...", "qty": 0, "unit": "m", "notes": ""}],
-  "electrical": [{"description": "...", "qty": 0, "unit": "no.", "notes": ""}]
-}
-Return ONLY the JSON object, no other text.`
-
-      let parsed = null
-      try {
-        const result = await callClaude([{ role: 'user', content: fileContent }], systemPrompt, 3000)
-        const clean = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-        parsed = JSON.parse(clean)
-      } catch (e) {
-        console.warn('Parse error for', f.name, e)
-      }
-
-      if (parsed) {
-        // Merge into allQty
-        for (const [cat, items] of Object.entries(parsed)) {
-          if (!allQty[cat]) allQty[cat] = {}
-          for (const item of items) {
-            if (!item.description) continue
-            if (!allQty[cat][item.description]) {
-              allQty[cat][item.description] = { ...item }
-            } else {
-              allQty[cat][item.description].qty += (item.qty || 0)
-            }
-          }
+async function runSec(n){
+  if(!getKey()){showE('e'+n,'No API key.');return}
+  if(!S.tFiles[n].length){showE('e'+n,'Upload at least one drawing.');return}
+  hideE('e'+n);
+  const files=S.tFiles[n];const cfg=CFG[n];
+  document.getElementById('b'+n).disabled=true;
+  document.getElementById('s'+n).classList.add('show');
+  const cl=document.getElementById('cl'+n);const cli=document.getElementById('ci'+n);
+  cl.style.display='block';
+  cli.innerHTML=files.map((f,i)=>`<div class="cc" id="cc${n}_${i}"><span id="ci${n}_${i}">⏳</span><span>${f.name}</span></div>`).join('');
+  const combined=[];
+  try{
+    for(let i=0;i<files.length;i++){
+      const f=files[i];
+      setTxt('st'+n,`Reading ${i+1} of ${files.length}: ${f.name}...`);
+      const chip=document.getElementById(`cc${n}_${i}`);const icon=document.getElementById(`ci${n}_${i}`);
+      if(chip)chip.className='cc processing';if(icon)icon.textContent='⟳';
+      const data=await b64(f);const m=mt(f);
+      const fc=[];
+      if(m==='application/pdf')fc.push({type:'document',source:{type:'base64',media_type:m,data}});
+      else fc.push({type:'image',source:{type:'base64',media_type:m,data}});
+      fc.push({type:'text',text:`File: ${f.name}`});
+      let parsed=null;
+      try{
+        const res=await api([{role:'user',content:fc}],cfg.prompt,3000);
+        const clean=res.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+        parsed=JSON.parse(clean);
+        if(!Array.isArray(parsed))throw new Error('not array');
+      }catch(e){console.warn('parse error',f.name,e)}
+      if(parsed&&parsed.length){
+        for(const item of parsed){
+          if(!item.description)continue;
+          const ex=combined.find(x=>x.description===item.description);
+          if(ex){ex.qty+=(item.qty||0);if(item.notes&&!ex.notes.includes(item.notes))ex.notes=ex.notes?(ex.notes+'; '+item.notes):item.notes}
+          else combined.push({...item});
         }
-        if (chip) chip.className = 'check-chip done'
-        if (icon) { icon.textContent = '✓'; icon.style.color = 'var(--green)' }
-      } else {
-        if (chip) chip.className = 'check-chip warn'
-        if (icon) icon.textContent = '⚠'
-      }
+        if(chip)chip.className='cc done';if(icon){icon.textContent='✓';icon.style.color='var(--green-lt)'}
+      }else{if(chip)chip.className='cc warn';if(icon)icon.textContent='⚠'}
     }
-
-    S.quantities = allQty
-    renderQtyTable()
-    document.getElementById('qtyPanel').classList.add('show')
-    setLoading('to', false)
-
-  } catch (e) {
-    setLoading('to', false)
-    showErr('to', e.message)
+    S.tData[n]=combined;rSecTable(n);
+    document.getElementById('q'+n).classList.add('show');updBadge(n);
+    document.getElementById('b'+n).disabled=false;
+    document.getElementById('s'+n).classList.remove('show');
+  }catch(e){
+    document.getElementById('b'+n).disabled=false;
+    document.getElementById('s'+n).classList.remove('show');
+    showE('e'+n,e.message);
   }
 }
 
-const CAT_LABELS = {
-  equipment: 'Equipment',
-  ductwork: 'Ductwork & Accessories',
-  grilles: 'Grilles & Diffusers',
-  flexDuct: 'Flexible Duct',
-  spiralDuct: 'Spiral Duct',
-  electrical: 'Electrical'
+function rSecTable(n){
+  const items=S.tData[n].filter(x=>x.qty>0);
+  if(!items.length){document.getElementById('qt'+n).innerHTML='<div style="padding:20px;color:var(--text-dim);font-size:13px">No items extracted.</div>';return}
+  let h='<table><thead><tr><th>Description</th><th>Unit</th><th style="text-align:right">Qty</th><th>Notes</th></tr></thead><tbody>';
+  items.forEach((item,i)=>{h+=`<tr><td>${item.description}</td><td style="color:var(--text-dim);font-family:var(--mono);font-size:11px;white-space:nowrap">${item.unit}</td><td style="text-align:right"><input class="qi" type="number" value="${item.qty}" min="0" step="${item.unit==='m'?'0.5':'1'}" onchange="S.tData[${n}][${i}].qty=parseFloat(this.value)||0;updBadge(${n})"></td><td class="nc">${item.notes||''}</td></tr>`});
+  h+='</tbody></table>';document.getElementById('qt'+n).innerHTML=h;
+}
+function updBadge(n){const cnt=S.tData[n].filter(x=>x.qty>0).length;const b=document.getElementById('tb'+n);const t=document.getElementById('tt'+n);if(b)b.textContent=cnt;if(t)t.classList.toggle('has-data',cnt>0)}
+function dlSec(n){
+  const items=S.tData[n].filter(x=>x.qty>0);if(!items.length){alert('No data to download.');return}
+  const p=document.getElementById('tProj').value||'Project';
+  let csv='Description,Qty,Unit,Notes\n';items.forEach(x=>csv+=`"${x.description}",${x.qty},"${x.unit}","${x.notes||''}"\n`);
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`${p.replace(/\s+/g,'_')}_${CFG[n].name.replace(/\s+/g,'_')}.csv`;a.click();
 }
 
-function renderQtyTable() {
-  let html = '<table><thead><tr><th>Description</th><th>Unit</th><th style="text-align:right">Qty</th><th>Notes</th></tr></thead><tbody>'
-  for (const [cat, items] of Object.entries(S.quantities)) {
-    const arr = Object.values(items).filter(i => i.qty > 0)
-    if (!arr.length) continue
-    html += `<tr class="cat-row"><td colspan="4">${CAT_LABELS[cat] || cat}</td></tr>`
-    arr.forEach(item => {
-      html += `<tr>
-        <td>${item.description}</td>
-        <td style="color:var(--text-dim);font-family:var(--mono);font-size:11px">${item.unit}</td>
-        <td class="qty-cell"><input type="number" value="${item.qty}" min="0" step="0.5" onchange="S.quantities['${cat}']['${item.description}'].qty=parseFloat(this.value)||0"></td>
-        <td style="color:var(--text-dim);font-size:12px">${item.notes || ''}</td>
-      </tr>`
-    })
-  }
-  html += '</tbody></table>'
-  document.getElementById('qtyTableContent').innerHTML = html
-}
+function setupDrop(id,fn){const z=document.getElementById(id);if(!z)return;z.addEventListener('dragover',e=>{e.preventDefault();z.classList.add('drag-over')});z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));z.addEventListener('drop',e=>{e.preventDefault();z.classList.remove('drag-over');fn(e.dataTransfer.files)})}
 
-function downloadQty() {
-  let csv = 'Category,Description,Qty,Unit,Notes\n'
-  for (const [cat, items] of Object.entries(S.quantities)) {
-    for (const item of Object.values(items)) {
-      if (item.qty > 0) csv += `"${CAT_LABELS[cat]||cat}","${item.description}",${item.qty},"${item.unit}","${item.notes||''}"\n`
-    }
-  }
-  const project = document.getElementById('toProject').value || 'Takeoff'
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
-  a.download = `${project.replace(/\s+/g,'_')}_Quantities.csv`
-  a.click()
-}
-
-// ── DRAG & DROP ────────────────────────────────────────────
-function setupDrop(id, prefix) {
-  const z = document.getElementById(id)
-  if (!z) return
-  z.addEventListener('dragover', e => { e.preventDefault(); z.classList.add('drag-over') })
-  z.addEventListener('dragleave', () => z.classList.remove('drag-over'))
-  z.addEventListener('drop', e => { e.preventDefault(); z.classList.remove('drag-over'); addFiles(prefix, e.dataTransfer.files) })
-}
-
-// ── INIT ───────────────────────────────────────────────────
-updateApiStatus()
-setupDrop('scopeZone', 'scope')
-setupDrop('toZone', 'to')
-if (!getKey()) setTimeout(() => document.getElementById('apiModal').classList.remove('hidden'), 300)
+updKey();
+setupDrop('sZone',f=>addFiles('s',f));
+for(let i=0;i<6;i++)setupDrop('z'+i,f=>addSec(i,f));
+if(!getKey())setTimeout(()=>document.getElementById('keyModal').classList.remove('hidden'),300);
 </script>
 </body>
 </html>
