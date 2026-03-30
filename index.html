@@ -1090,7 +1090,13 @@
       <span id="to-status-text">Reading drawings...</span>
     </div>
 
-    <div class="qty-table-wrap" id="qty-table-wrap" style="margin-top:28px">
+    <!-- Drawing checklist -->
+    <div id="drawing-checklist" style="display:none;margin-top:20px;margin-bottom:8px">
+      <div style="font-family:var(--cond);font-size:11px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px">Drawing Progress</div>
+      <div id="checklist-items" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    </div>
+
+    <div class="qty-table-wrap" id="qty-table-wrap" style="margin-top:12px">
       <div class="qty-toolbar">
         <div class="qty-toolbar-title">Extracted Quantities — Review & Edit</div>
         <div class="toolbar-actions">
@@ -1265,244 +1271,106 @@ async function runScope() {
   const notes = document.getElementById('scope-notes').value.trim()
 
   hideError('scope')
-  setLoading('scope', true, 'Building file content...')
+  setLoading('scope', true, 'Loading drawings...')
 
   try {
-    // Process one file at a time to avoid size limits
-    let allText = ''
-
+    const msgContent = []
     for (let i = 0; i < state.scopeFiles.length; i++) {
       const file = state.scopeFiles[i]
-      setStatus('scope', `Reading drawing ${i + 1} of ${state.scopeFiles.length}: ${file.name}...`)
-
+      setStatus('scope', `Loading drawing ${i + 1} of ${state.scopeFiles.length}...`)
       const b64 = await fileToBase64(file)
       const mt = getMediaType(file)
-      const content = []
-
       if (mt === 'application/pdf') {
-        content.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
+        msgContent.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
       } else {
-        content.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
+        msgContent.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
       }
-      content.push({ type: 'text', text: `File: ${file.name}. Extract all mechanical scope from this drawing. List every piece of mechanical equipment, ductwork, grilles, pipework, electrical, and any other mechanical services you can identify. Be thorough and specific.` })
-
-      const batchResult = await callClaude([{ role: 'user', content }],
-        'You are an expert mechanical estimator for BL Air Mechanical Services Pty Ltd. Extract mechanical scope from drawings accurately and thoroughly.',
-        2048)
-      allText += '\n\n' + batchResult
     }
 
-    setStatus('scope', 'Generating scope report...')
+    msgContent.push({ type: 'text', text: `Project: ${project}${client ? ', Client: ' + client : ''}${notes ? ', Notes: ' + notes : ''}.
 
-    const systemPrompt = `You are a senior mechanical estimator at BL Air Mechanical Services Pty Ltd (mechanical contractor, QLD Australia).
-Generate a professional scope confirmation report based on the extracted information.
+Read all the mechanical drawings and generate a full scope confirmation report for BL Air Mechanical Services Pty Ltd.
 
-ALWAYS include these sections (use exactly these section names):
-- EQUIPMENT SCHEDULE
-- DUCTWORK & SHEETMETAL
-- DX PIPEWORK & REFRIGERANT
-- ELECTRICAL
-- GRILLES & DIFFUSERS
-- FLEXIBLE DUCT
-- SPIRAL DUCT
-- SEISMIC & BUILDING WORKS
-- COMMISSIONING
-- EXCLUSIONS
-- ASSUMPTIONS
+Format your response EXACTLY like this — use ### before each section title and - before each item:
 
-STANDARD EXCLUSIONS to always include:
+### EQUIPMENT SCHEDULE
+- item 1
+- item 2
+
+### DUCTWORK & SHEETMETAL
+- item 1
+
+### DX PIPEWORK & REFRIGERANT
+- item 1
+
+### ELECTRICAL
+- item 1
+
+### GRILLES & DIFFUSERS
+- item 1
+
+### FLEXIBLE DUCT
+- item 1
+
+### SPIRAL DUCT
+- item 1
+
+### SEISMIC & BUILDING WORKS
+- item 1
+
+### COMMISSIONING
+- item 1
+
+### EXCLUSIONS
 - Core holes (by builder)
 - Power supply to equipment (power adjacent, by electrical contractor)
 - BMS / building management system (unless noted)
 - Fire rating of penetrations (by others)
 - Hydraulic works
 
-Return ONLY valid JSON in this exact structure with NO trailing commas and NO extra text:
-{
-  "sections": [
-    {
-      "title": "SECTION NAME",
-      "items": ["item 1", "item 2"]
-    }
-  ]
-}
+### ASSUMPTIONS
+- item 1
 
-Keep each item concise - one line per item. Return ONLY the JSON object, nothing else.`
+Be thorough and specific using actual equipment models, sizes and quantities from the drawings.` })
+
+    setStatus('scope', 'Generating scope report...')
 
     const result = await callClaude(
-      [{ role: 'user', content: `Project: ${project}${client ? `\nClient: ${client}` : ''}\n${notes ? `Notes: ${notes}\n` : ''}\n\nExtracted scope from drawings:\n${allText}\n\nGenerate the complete scope confirmation report and pricing emails as JSON.` }],
-      systemPrompt, 8000)
+      [{ role: 'user', content: msgContent }],
+      'You are a senior mechanical estimator at BL Air Mechanical Services Pty Ltd, a mechanical contractor based in Queensland Australia.',
+      4096)
 
-    // Parse JSON robustly
-    let parsed
-    try {
-      const clean = result.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
-      parsed = JSON.parse(clean)
-    } catch(e) {
-      // If JSON is truncated, try to extract sections manually
-      console.warn('JSON parse failed, attempting manual extraction:', e)
-      const sectionsMatch = result.match(/"sections"\s*:\s*(\[.*?\])/s)
-      const emailsMatch = result.match(/"pricingEmails"\s*:\s*(\{.*?\})/s)
-      parsed = {
-        sections: sectionsMatch ? JSON.parse(sectionsMatch[1]) : [],
-        pricingEmails: emailsMatch ? JSON.parse(emailsMatch[1]) : {}
-      }
-      if (!parsed.sections.length) {
-        // Last resort: ask Claude to re-output just the sections in a simpler format
-        throw new Error('Could not parse response. Please try again — reduce the number of drawings if the issue persists.')
+    // Parse plain text sections - no JSON
+    state.reportSections = []
+    const sections = result.split(/^###\s+/m).filter(s => s.trim())
+    for (const section of sections) {
+      const lines = section.trim().split('\n')
+      const title = lines[0].trim()
+      const items = lines.slice(1)
+        .filter(l => l.trim().startsWith('-'))
+        .map(l => l.trim().replace(/^-\s*/, ''))
+        .filter(l => l.length > 0)
+      if (title && items.length > 0) {
+        state.reportSections.push({ title, items })
       }
     }
 
-    state.reportSections = parsed.sections || []
-    state.emailDrafts = parsed.pricingEmails || {}
+    if (!state.reportSections.length) {
+      throw new Error('No sections found in response. Please try again.')
+    }
 
+    state.emailDrafts = {}
     renderReport()
-    renderEmails()
-
     document.getElementById('scope-report').classList.add('visible')
-    document.getElementById('scope-emails').classList.add('visible')
     document.getElementById('scope-tabs').style.display = 'flex'
-
     setLoading('scope', false)
+
   } catch (err) {
     setLoading('scope', false)
     showError('scope', err.message)
   }
 }
 
-function renderReport() {
-  const container = document.getElementById('report-content')
-  container.innerHTML = state.reportSections.map((section, si) => `
-    <div class="report-section" id="section-${si}">
-      <div class="report-section-header">
-        <div class="report-section-title">${section.title}</div>
-        <div class="section-actions">
-          <button class="btn-tiny" onclick="addItem(${si})">+ Add</button>
-          <button class="btn-tiny danger" onclick="removeSection(${si})">Remove Section</button>
-        </div>
-      </div>
-      <div class="report-section-body">
-        <ul class="section-items" id="items-${si}">
-          ${section.items.map((item, ii) => renderItem(si, ii, item)).join('')}
-        </ul>
-        <div class="add-item-row">
-          <input type="text" class="add-item-input" id="new-item-${si}" placeholder="Add item..." onkeydown="if(event.key==='Enter')addItem(${si})">
-          <button class="btn-tiny" onclick="addItem(${si})">+ Add</button>
-        </div>
-      </div>
-    </div>
-  `).join('')
-}
-
-function renderItem(si, ii, text) {
-  return `
-    <li class="section-item" id="item-${si}-${ii}">
-      <span class="item-bullet">—</span>
-      <div class="item-text" contenteditable="true" onblur="updateItem(${si},${ii},this.textContent)">${text}</div>
-      <button class="item-remove" onclick="removeItem(${si},${ii})">×</button>
-    </li>`
-}
-
-function addItem(si) {
-  const input = document.getElementById(`new-item-${si}`)
-  const text = input.value.trim()
-  if (!text) return
-  state.reportSections[si].items.push(text)
-  input.value = ''
-  const list = document.getElementById(`items-${si}`)
-  const ii = state.reportSections[si].items.length - 1
-  const li = document.createElement('li')
-  li.outerHTML = renderItem(si, ii, text)
-  list.insertAdjacentHTML('beforeend', renderItem(si, ii, text))
-}
-
-function removeItem(si, ii) {
-  state.reportSections[si].items.splice(ii, 1)
-  document.getElementById(`item-${si}-${ii}`)?.remove()
-}
-
-function updateItem(si, ii, text) {
-  state.reportSections[si].items[ii] = text.trim()
-}
-
-function removeSection(si) {
-  state.reportSections.splice(si, 1)
-  renderReport()
-}
-
-function addSection() {
-  const input = document.getElementById('new-section-name')
-  const name = input.value.trim().toUpperCase()
-  if (!name) return
-  state.reportSections.push({ title: name, items: [] })
-  input.value = ''
-  renderReport()
-}
-
-function copyReport() {
-  let text = `SCOPE CONFIRMATION REPORT\n${document.getElementById('scope-project').value}\n${'='.repeat(60)}\n\n`
-  state.reportSections.forEach(s => {
-    text += `${s.title}\n${'-'.repeat(s.title.length)}\n`
-    s.items.forEach(item => { text += `• ${item}\n` })
-    text += '\n'
-  })
-  navigator.clipboard.writeText(text).then(() => alert('Report copied to clipboard'))
-}
-
-function downloadReport() {
-  const project = document.getElementById('scope-project').value || 'Scope'
-  let text = `SCOPE CONFIRMATION — ${project.toUpperCase()}\nBL Air Mechanical Services Pty Ltd\n${'='.repeat(60)}\n\n`
-  state.reportSections.forEach(s => {
-    text += `${s.title}\n${'-'.repeat(s.title.length)}\n`
-    s.items.forEach(item => { text += `• ${item}\n` })
-    text += '\n'
-  })
-  const blob = new Blob([text], { type: 'text/plain' })
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(blob)
-  a.download = `${project.replace(/\s+/g, '_')}_Scope.txt`
-  a.click()
-}
-
-// ══════════════════════════════════════════════
-// PRICING EMAILS
-// ══════════════════════════════════════════════
-function renderEmails() {
-  const tabs = document.getElementById('email-tab-bar')
-  const panels = document.getElementById('email-panels')
-  const keys = Object.keys(state.emailDrafts)
-
-  tabs.innerHTML = keys.map((k, i) => `
-    <button class="email-tab ${i === 0 ? 'active' : ''}" onclick="switchEmail(${i}, this)">${k}</button>
-  `).join('')
-
-  panels.innerHTML = keys.map((k, i) => `
-    <div class="email-panel ${i === 0 ? 'active' : ''}" id="email-panel-${i}">
-      <div class="field-label" style="margin-bottom:8px">${k}</div>
-      <textarea class="email-body" id="email-body-${i}">${state.emailDrafts[k]}</textarea>
-    </div>
-  `).join('')
-
-  state.activeEmailTab = 0
-}
-
-function switchEmail(idx, btn) {
-  document.querySelectorAll('.email-tab').forEach(t => t.classList.remove('active'))
-  document.querySelectorAll('.email-panel').forEach(p => p.classList.remove('active'))
-  btn.classList.add('active')
-  document.getElementById(`email-panel-${idx}`).classList.add('active')
-  state.activeEmailTab = idx
-}
-
-function copyActiveEmail() {
-  const ta = document.getElementById(`email-body-${state.activeEmailTab}`)
-  if (!ta) return
-  navigator.clipboard.writeText(ta.value).then(() => alert('Email copied to clipboard'))
-}
-
-// ══════════════════════════════════════════════
-// QUANTITY TAKEOFF
-// ══════════════════════════════════════════════
 async function runTakeoff() {
   const key = getApiKey()
   if (!key) { showError('to', 'No API key set. Click API KEY in the header.'); return }
@@ -1514,6 +1382,27 @@ async function runTakeoff() {
   hideError('to')
   setLoading('to', true, 'Reading drawings...')
 
+  // Show checklist
+  const checklistEl = document.getElementById('drawing-checklist')
+  const checklistItems = document.getElementById('checklist-items')
+  checklistEl.style.display = 'block'
+  checklistItems.innerHTML = state.takeoffFiles.map((f, i) => `
+    <div id="check-${i}" style="
+      background:var(--surface2);
+      border:1px solid var(--border);
+      padding:5px 12px;
+      font-family:var(--mono);
+      font-size:11px;
+      color:var(--text-dim);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    ">
+      <span id="check-icon-${i}" style="font-size:13px">⏳</span>
+      <span>${f.name}</span>
+    </div>
+  `).join('')
+
   try {
     let allExtracted = {}
 
@@ -1521,16 +1410,22 @@ async function runTakeoff() {
       const file = state.takeoffFiles[i]
       setStatus('to', `Processing drawing ${i + 1} of ${state.takeoffFiles.length}: ${file.name}...`)
 
+      // Update checklist — mark as in progress
+      const checkIcon = document.getElementById(`check-icon-${i}`)
+      const checkRow = document.getElementById(`check-${i}`)
+      if (checkIcon) checkIcon.textContent = '⟳'
+      if (checkRow) checkRow.style.borderColor = 'var(--orange)'
+
       const b64 = await fileToBase64(file)
       const mt = getMediaType(file)
-      const content = []
+      const msgContent = []
 
       if (mt === 'application/pdf') {
-        content.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
+        msgContent.push({ type: 'document', source: { type: 'base64', media_type: mt, data: b64 } })
       } else {
-        content.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
+        msgContent.push({ type: 'image', source: { type: 'base64', media_type: mt, data: b64 } })
       }
-      content.push({ type: 'text', text: `File: ${file.name}. Extract ALL mechanical quantities from this drawing. Count every piece of equipment, measure duct runs, count grilles, measure spiral duct. Be precise.` })
+      msgContent.push({ type: 'text', text: `File: ${file.name}. Extract ALL mechanical quantities from this drawing. Count every piece of equipment, measure duct runs, count ALL grilles and diffusers individually, measure spiral duct lengths per diameter, count flex duct runs. Cross-reference equipment schedules where present. Be thorough and precise — do not skip any items.` })
 
       const systemPrompt = `You are an expert mechanical estimator. Extract quantities from mechanical drawings for BL Air Mechanical Services.
 
