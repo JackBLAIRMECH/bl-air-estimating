@@ -643,21 +643,21 @@ async function runTakeoff() {
           role: 'user',
           content: [
             { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } },
-            { type: 'text', text: `You are a mechanical estimator doing a quantity takeoff. Extract ALL of the following from this drawing - give actual numbers even if approximate.
+            { type: 'text', text: `You are a mechanical estimator doing a quantity takeoff from a mechanical drawing. Extract the following carefully:
 
-AC EQUIPMENT: Count every indoor unit (cassettes, highwall splits, mid-static ducted, high-static ducted, wall mounted, VRF indoor/outdoor, branch boxes).
+AC EQUIPMENT – Count every unit tag: ceiling cassettes, ducted units (mid/high static), highwall splits, VRF indoor/outdoor units, branch boxes, wall mounts. Check the schedule if there is one.
 
-FANS: Count every fan tag - OAF (outside air fans), EF (exhaust fans), TEF (toilet exhaust fans), roof cowls. Note duct-mounted vs roof-mounted.
+FANS – Count every fan tag: OAF (outside air fans, note duct-mounted vs roof-mounted), EF (exhaust fans), TEF (toilet exhaust fans), roof cowls (COWL, KJF).
 
-DUCTWORK: For each duct run visible on the plan, note the duct size (W x H mm) and estimate length in metres from scale. Note insulation type (none / PI board / R1.0 / R1.5).
+SHEETMETAL DUCTWORK – This is critical. Trace every duct run on the floor plan and estimate its length in linear metres. The drawing scale is 1:100 at A1 (1mm on drawing = 100mm real). Note the insulation type for each run: Uninsulated / PI Board 25mm / R1.0 internal / R1.5 internal. List each run separately with description, estimated length in metres, and insulation type.
 
-GRILLES AND DIFFUSERS: Count EVERY grille and diffuser symbol on the plan individually. Common types: supply diffusers (600x600 or 450x450 four-way face), return egg crate grilles (600x600 or 1200x600), exhaust egg crate (200x200), OA grilles (600x600), bulkhead grilles (200x58 double deflection), cushion head boxes. Count each symbol on the plan.
+GRILLES & DIFFUSERS – Count EVERY symbol on the plan individually: supply diffusers (S1 = 600x600, S2 = 450x450 four-way face), return grilles (R1 = 600x600, R2 = 1200x600 egg crate), exhaust grilles (E1 = 200x200 egg crate), OA grilles (OA1 = 600x600 egg crate), bulkhead supply grilles (S3 = 200x58 double deflection), cushion head boxes.
 
-FLEXIBLE DUCT: Count the number of flexible duct drops to terminals. Assume 1.5m per connection. Note diameter.
+FLEXIBLE DUCT – Count the number of flexible duct spurs/connections to air terminals per diameter size. Each connection averages 1.5m. Note the diameter (90/125/150/200/250/300/400mm).
 
-DAMPERS AND ACCESSORIES: Count fire dampers, VCDs, NR return dampers, CPBD OA dampers, canvas connections, access panels.
+DAMPERS & ACCESSORIES – Count every tag: NR (non-return dampers), CPBD (circular opposed blade dampers), fire dampers, VCDs (volume control dampers). Count canvas connections (one per FCU and fan). Count access panels shown.
 
-It is better to estimate than to leave items blank. List all quantities found.` }
+Be thorough. Estimate duct lengths from scale rather than leaving blank.` }
           ]
         }], 'You are a mechanical quantity surveyor. Extract all quantities from drawings.', 1500)
 
@@ -679,7 +679,7 @@ It is better to estimate than to leave items blank. List all quantities found.` 
 Drawing extractions:
 ${summaries.join('\n\n')}
 
-Return ONLY this JSON (integers only, 0 if not found):
+Return ONLY this JSON. No other text. Round all values to integers.
 {
   "AC Equipment": [
     {"item": "Ceiling Cassette FCU", "qty": 0, "unit": "no."},
@@ -698,30 +698,33 @@ Return ONLY this JSON (integers only, 0 if not found):
     {"item": "Toilet Exhaust Fan", "qty": 0, "unit": "no."},
     {"item": "Roof Cowl", "qty": 0, "unit": "no."}
   ],
-  "Ductwork": [
-    {"item": "Sheetmetal Duct – Uninsulated", "qty": 0, "unit": "m²"},
-    {"item": "PI Board Duct – 25mm", "qty": 0, "unit": "m²"},
-    {"item": "Sheetmetal + R1.0 Insulation", "qty": 0, "unit": "m²"},
-    {"item": "Sheetmetal + R1.5 Insulation", "qty": 0, "unit": "m²"}
+  "Sheetmetal Ductwork": [
+    {"item": "Supply Duct – Uninsulated", "qty": 0, "unit": "lin.m"},
+    {"item": "Supply Duct – PI Board 25mm", "qty": 0, "unit": "lin.m"},
+    {"item": "Supply Duct – R1.0 Internal Insulation", "qty": 0, "unit": "lin.m"},
+    {"item": "Supply Duct – R1.5 Internal Insulation", "qty": 0, "unit": "lin.m"},
+    {"item": "Return Duct – Uninsulated", "qty": 0, "unit": "lin.m"},
+    {"item": "Exhaust Duct – Uninsulated", "qty": 0, "unit": "lin.m"},
+    {"item": "Spigots", "qty": 0, "unit": "no."}
   ],
-  "Grilles & Diffusers": [
-    {"item": "Supply Diffuser 600x600 4-Way", "qty": 0, "unit": "no."},
-    {"item": "Supply Diffuser 450x450 4-Way", "qty": 0, "unit": "no."},
-    {"item": "Return Grille 600x600 Egg Crate", "qty": 0, "unit": "no."},
-    {"item": "Return Grille 1200x600 Egg Crate", "qty": 0, "unit": "no."},
-    {"item": "Exhaust Grille 200x200 Egg Crate", "qty": 0, "unit": "no."},
-    {"item": "OA Grille 600x600 Egg Crate", "qty": 0, "unit": "no."},
-    {"item": "Bulkhead Grille 200x58 Double Deflection", "qty": 0, "unit": "no."},
+  "Grilles & Diffusers (colour by architect)": [
+    {"item": "Supply Diffuser 600x600 4-Way (colour by architect)", "qty": 0, "unit": "no."},
+    {"item": "Supply Diffuser 450x450 4-Way (colour by architect)", "qty": 0, "unit": "no."},
+    {"item": "Return Grille 600x600 Egg Crate (colour by architect)", "qty": 0, "unit": "no."},
+    {"item": "Return Grille 1200x600 Egg Crate (colour by architect)", "qty": 0, "unit": "no."},
+    {"item": "Exhaust Grille 200x200 Egg Crate (colour by architect)", "qty": 0, "unit": "no."},
+    {"item": "OA Grille 600x600 Egg Crate (colour by architect)", "qty": 0, "unit": "no."},
+    {"item": "Bulkhead Grille 200x58 Double Deflection (colour by architect)", "qty": 0, "unit": "no."},
     {"item": "Cushion Head Box", "qty": 0, "unit": "no."}
   ],
-  "Flexible Duct": [
-    {"item": "Flex Duct 90mm", "qty": 0, "unit": "m"},
-    {"item": "Flex Duct 125mm", "qty": 0, "unit": "m"},
-    {"item": "Flex Duct 150mm", "qty": 0, "unit": "m"},
-    {"item": "Flex Duct 200mm", "qty": 0, "unit": "m"},
-    {"item": "Flex Duct 250mm", "qty": 0, "unit": "m"},
-    {"item": "Flex Duct 300mm", "qty": 0, "unit": "m"},
-    {"item": "Flex Duct 400mm", "qty": 0, "unit": "m"}
+  "Flexible Duct (6m bags)": [
+    {"item": "Flex Duct 90mm", "qty": 0, "unit": "bags"},
+    {"item": "Flex Duct 125mm", "qty": 0, "unit": "bags"},
+    {"item": "Flex Duct 150mm", "qty": 0, "unit": "bags"},
+    {"item": "Flex Duct 200mm", "qty": 0, "unit": "bags"},
+    {"item": "Flex Duct 250mm", "qty": 0, "unit": "bags"},
+    {"item": "Flex Duct 300mm", "qty": 0, "unit": "bags"},
+    {"item": "Flex Duct 400mm", "qty": 0, "unit": "bags"}
   ],
   "Dampers & Accessories": [
     {"item": "Fire Damper", "qty": 0, "unit": "no."},
@@ -731,7 +734,14 @@ Return ONLY this JSON (integers only, 0 if not found):
     {"item": "Canvas Connection", "qty": 0, "unit": "no."},
     {"item": "Access Panel", "qty": 0, "unit": "no."}
   ]
-}`
+}
+
+IMPORTANT RULES:
+- Sheetmetal duct: estimate linear metres by visually tracing each duct run on the floor plan. The drawing scale is 1:100 at A1. Add all runs together per insulation type.
+- Flex duct: count total connections per diameter, multiply by 1.5m per connection, divide by 6 and round UP for bags. e.g. 20 connections x 1.5m = 30m / 6 = 5 bags.
+- Dampers: count every NR, CPBD, fire damper and VCD tag shown on the drawings.
+- Canvas connections: count one per FCU plus one per fan unit.
+- All quantities must be whole numbers. Use 0 only if genuinely not present.`
 
     const raw = await callClaude(
       [{ role: 'user', content: compilePrompt }],
