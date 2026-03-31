@@ -649,7 +649,7 @@ AC EQUIPMENT – Count every unit tag: ceiling cassettes, ducted units (mid/high
 
 FANS – Count every fan tag: OAF (outside air fans, note duct-mounted vs roof-mounted), EF (exhaust fans), TEF (toilet exhaust fans), roof cowls (COWL, KJF).
 
-SHEETMETAL DUCTWORK – This is critical. Trace every duct run on the floor plan and estimate its length in linear metres. The drawing scale is 1:100 at A1 (1mm on drawing = 100mm real). Note the insulation type for each run: Uninsulated / PI Board 25mm / R1.0 internal / R1.5 internal. List each run separately with description, estimated length in metres, and insulation type.
+SHEETMETAL DUCTWORK – This is critical. Trace every duct run on the floor plan. For each run record: (1) duct size in WxH mm as labelled on the drawing, (2) service type – Supply / Return / Exhaust, (3) insulation type – Uninsulated / PI Board 25mm / R1.0 internal / R1.5 internal, (4) estimated length in linear metres using 1:100 scale (1mm on drawing = 100mm real). List every run individually. Example: "600x300 Supply PI Board 25mm – 18m". Duct sizes are usually annotated directly on the duct lines on the plan.
 
 GRILLES & DIFFUSERS – Count EVERY symbol on the plan individually: supply diffusers (S1 = 600x600, S2 = 450x450 four-way face), return grilles (R1 = 600x600, R2 = 1200x600 egg crate), exhaust grilles (E1 = 200x200 egg crate), OA grilles (OA1 = 600x600 egg crate), bulkhead supply grilles (S3 = 200x58 double deflection), cushion head boxes.
 
@@ -700,12 +700,7 @@ Return ONLY this JSON. No other text. Round all values to integers.
     {"item": "Roof Cowl", "qty": 0, "unit": "no."}
   ],
   "Sheetmetal Ductwork": [
-    {"item": "Supply Duct – Uninsulated", "qty": 0, "unit": "lin.m"},
-    {"item": "Supply Duct – PI Board 25mm", "qty": 0, "unit": "lin.m"},
-    {"item": "Supply Duct – R1.0 Internal Insulation", "qty": 0, "unit": "lin.m"},
-    {"item": "Supply Duct – R1.5 Internal Insulation", "qty": 0, "unit": "lin.m"},
-    {"item": "Return Duct – Uninsulated", "qty": 0, "unit": "lin.m"},
-    {"item": "Exhaust Duct – Uninsulated", "qty": 0, "unit": "lin.m"},
+    {"item": "WxH Supply – Insulation Type", "qty": 0, "unit": "lin.m"},
     {"item": "Spigots", "qty": 0, "unit": "no."}
   ],
   "Grilles & Diffusers (colour by architect)": [
@@ -738,7 +733,7 @@ Return ONLY this JSON. No other text. Round all values to integers.
 }
 
 IMPORTANT RULES:
-- Sheetmetal duct: estimate linear metres by visually tracing each duct run on the floor plan. The drawing scale is 1:100 at A1. Add all runs together per insulation type.
+- Sheetmetal ductwork: replace the placeholder entry with ONE line item per unique SIZE + INSULATION TYPE combination found in the drawings. Name format: "WxH Supply – PI Board 25mm" / "WxH Return – Uninsulated" / "WxH Exhaust – Uninsulated". Estimate linear metres by tracing runs on the plan at 1:100 scale. Group all runs of same size together. Use real sizes from the drawings (e.g. 600x300, 400x200, 1000x400 etc). Keep Spigots as the last entry.
 - Flex duct: count total connections per diameter, multiply by 1.5m per connection, divide by 6 and round UP for bags. e.g. 20 connections x 1.5m = 30m / 6 = 5 bags.
 - Dampers: count every NR, CPBD, fire damper and VCD tag shown on the drawings.
 - Canvas connections: count one per FCU plus one per fan unit.
